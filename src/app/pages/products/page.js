@@ -49,7 +49,7 @@ console.log(wishlistItems)
 
   useEffect(() => {
     const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    setWishlistItems(savedWishlist);
+      setWishlistItems(savedWishlist);
   }, []);
 
   const addToWishlist = (product) => {
@@ -60,7 +60,6 @@ console.log(wishlistItems)
       localStorage.setItem('wishlist', JSON.stringify(updated));
     }
   };
-
 
 
   // Filtered products
@@ -178,10 +177,11 @@ console.log(wishlistItems)
                 <Image
           
                   src={product.thumbnail}
-                  width={10}
+                  width={100}
 
-                  height={10}
+                  height={100}
                   alt={product.title}
+                  unoptimized
                   className='w-full h-40 object-cover rounded transition-transform duration-300 hover:scale-110'
                 />
                 <h3 className='font-semibold text-lg mt-2'>{product.title}</h3>

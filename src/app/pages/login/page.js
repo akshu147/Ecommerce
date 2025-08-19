@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { FaApple, FaEye, FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 
 const AuthPage = () => {
