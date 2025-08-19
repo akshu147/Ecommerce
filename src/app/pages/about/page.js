@@ -6,13 +6,15 @@ import "aos/dist/aos.css"
 import Head from "../../componants/Head"
 import Navbar from "../../componants/Navbar"
 
-const page = () => {
+const Page = () => {
   useEffect(() => {
     AOS.init({
       duration: 1000, // animation duration
       once: true,     // animation only once
     });
   }, []);
+
+
 
   return (
     <>
@@ -81,4 +83,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

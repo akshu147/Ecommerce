@@ -91,7 +91,7 @@ console.log(wishlistItems)
     <>
       <Head />
       <Navbar />
-      <div className='flex flex-col md:flex-row p-5 items-start justify-between border-[5px] border-amber-300'>
+      <div className='flex flex-col md:flex-row p-5 items-start justify-between'>
         
         {/* Sidebar */}
         <aside className='w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6'>
