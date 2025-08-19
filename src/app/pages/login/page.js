@@ -14,7 +14,7 @@ const AuthPage = () => {
   const [isEmailValid, setIsEmailValid] = useState(null)
   const [isPasswordValid, setIsPasswordValid] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
-  const nav = useRouter()
+  // const nav = useRouter()
 
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   const passwordRegex =

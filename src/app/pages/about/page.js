@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react'
 import AOS from "aos"
 import "aos/dist/aos.css"
+import Image from "next/image";
 
 import Head from "../../componants/Head"
 import Navbar from "../../componants/Navbar"
@@ -14,6 +15,7 @@ const Page = () => {
     });
   }, []);
 
+  
 
 
   return (
@@ -30,7 +32,7 @@ const Page = () => {
 
         {/* Section: Company Overview */}
         <section className="mb-12 grid md:grid-cols-2 gap-8 items-center">
-          <img src="/about-image.jpg" alt="Our Store" className="w-full rounded-2xl shadow-md" data-aos="fade-right"/>
+          <Image width={50} height={20} src="/about-image.jpg" alt="Our Store" className="w-full rounded-2xl shadow-md" data-aos="fade-right"/>
           <div data-aos="fade-left">
             <h2 className="text-2xl font-semibold mb-4">Who We Are</h2>
             <p className="text-gray-600">

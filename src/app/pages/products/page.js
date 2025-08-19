@@ -6,6 +6,7 @@ import { GoHeartFill } from 'react-icons/go'
 import axios from 'axios'
 import { Mycontext} from '../../context/Authcontext'
 import { useRouter } from 'next/navigation'
+import Image from "next/image";
 
 
 
@@ -174,8 +175,12 @@ console.log(wishlistItems)
                     className={`w-[16px] ${wishlistItems.some(item => item.id === product.id) ? 'text-red-500' : 'text-gray-400'}`}
                   />
                 </i>
-                <img
+                <Image
+          
                   src={product.thumbnail}
+                  width={10}
+
+                  height={10}
                   alt={product.title}
                   className='w-full h-40 object-cover rounded transition-transform duration-300 hover:scale-110'
                 />
