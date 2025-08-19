@@ -50,7 +50,7 @@ console.log(wishlistItems)
   useEffect(() => {
     const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
       setWishlistItems(savedWishlist);
-  }, []);
+  }, [setWishlistItems]);
 
   const addToWishlist = (product) => {
     if(wishlistItems.some(item => item.id === product.id)) return alert('Already in wishlist');
@@ -157,14 +157,14 @@ console.log(wishlistItems)
         </aside>
 
         {/* Products */}
-        <main className='product-ui w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 h-[100vh] lg:grid-cols-4 gap-6 p-4 overflow-y-auto'>
+        <main className='product-ui w-full border border-amber-300 grid grid-cols-3 sm:grid-cols-3 md:p-4 h-[100vh] lg:grid-cols-6 sm:gap-[3] md:gap-[4] lg:gap-[5] gap-2 overflow-y-auto'>
           {loading ? (
             <p className='col-span-full text-center text-gray-500'>Loading...</p>
           ) : allProductData.length ? (
             allProductData.map((product, index) => (
               <div
                 key={index}
-                className='border p-4 rounded-lg shadow relative transition-shadow duration-300 hover:shadow-xl'
+                className='border rounded-lg shadow relative transition-shadow md:p-4 duration-300 hover:shadow-xl border-blue-300'
               >
                 <i
                   className='absolute top-2 right-2 text-xl cursor-pointer'
@@ -175,16 +175,15 @@ console.log(wishlistItems)
                   />
                 </i>
                 <Image
-          
                   src={product.thumbnail}
-                  width={100}
-
-                  height={100}
+                  width={10}
+                  height={10}
                   alt={product.title}
                   unoptimized
                   className='w-full h-40 object-cover rounded transition-transform duration-300 hover:scale-110'
                 />
-                <h3 className='font-semibold text-lg mt-2'>{product.title}</h3>
+                <div className='hidden md:block'>
+                   <h3 className='font-semibold text-lg mt-2'>{product.title}</h3>
                 <p className='text-gray-500 mb-1'>{product.brand}</p>
                 <p className='font-bold text-xl'>rs{product.price}</p>
                 <button
@@ -194,6 +193,8 @@ console.log(wishlistItems)
                   {/* {wishlistItems.some(item => item.id === product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'} */}
                   Add to cart
                 </button>
+                </div>
+               
               </div>
             ))
           ) : (
