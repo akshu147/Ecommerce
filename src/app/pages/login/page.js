@@ -5,6 +5,9 @@ import { FaApple, FaEye, FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
 // import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
+import Image from "next/image";
+
+
 
 const AuthPage = () => {
   const [ifsignup, setIfSignup] = useState(true)
@@ -258,10 +261,12 @@ const AuthPage = () => {
 
         {/* Right side illustration */}
         <div className='hidden md:flex justify-center items-center bg-purple-200'>
-          <img
+          <Image
             src='/signup-illustration.png'
             alt='Illustration'
             className='object-cover w-full h-full'
+            height={200}
+            width={200}
           />
         </div>
       </div>
