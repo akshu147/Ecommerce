@@ -126,7 +126,7 @@ export default function HomePage () {
     )
 
   return (
-    <div className='min-h-screen bg-[#D1D7DB] text-gray-900'>
+    <div className='min-h-screen bg-[#D1D7DB] text-gray-900 px-0  sm:px-1 md:px-3 lg:px-9'>
       {/* ========================== Hero ========================== */}
       <section className='relative overflow-hidden'>
         <div className='absolute inset-0' />
@@ -507,7 +507,7 @@ function Feature ({ icon, title, subtitle }) {
 function Footer () {
   const year = new Date().getFullYear()
   return (
-    <footer className='bg-[#1e2224] text-white mt-12'>
+    <footer className='bg-[#1e2224] text-white mt-12 rounded-[10px]'>
       <div className='container mx-auto px-4 py-14 grid md:grid-cols-4 gap-10'>
         <div>
           <h3 className='text-2xl font-extrabold'>STARK</h3>

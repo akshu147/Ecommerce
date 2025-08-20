@@ -58,33 +58,7 @@ const Herohome = () => {
         </div>
 
         {/* Right Section */}
-        <div className='max-w-xl w-full' data-aos="fade-left">
-          <div className='h-[500px] w-full max-w-md mx-auto'>
-            <Swiper
-              direction={showcasestyle}
-              slidesPerView={1.2}
-              spaceBetween={30}
-              mousewheel={true}
-              loop={true}
-              autoplay={{
-                delay: 2500,
-                disableOnInteraction: false
-              }}
-              modules={[Autoplay, Mousewheel]}
-              className='h-full'
-            >
-              {images.map((src, index) => (
-                <SwiperSlide key={index}>
-                  <img
-                    src={src}
-                    alt={`Slide ${index + 1}`}
-                    className='w-full h-full object-cover rounded-xl'
-                  />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </div>
+       
       </div>
     </section>
   )

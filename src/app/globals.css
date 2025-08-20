@@ -1,16 +1,33 @@
 @import "tailwindcss";
 
-body {
-  background: linear-gradient(#D2D7DC, #CED4D8);
-
+:root {
+  --background-start: #D2D7DC;
+  --background-end: #CED4D8;
+  --text-primary: #000000;
+  --text-secondary: #4B5563;
+  --card-bg: #FFFFFF;
+  --border-color: #E5E7EB;
+  --hover-bg: #F3F4F6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background: linear-gradient(var(--background-start), var(--background-end));
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
 .product-ui::-webkit-scrollbar {
   display: none;
 }
+
 .xxx {
   transition: 3s;
 }
-
 
 .cart-panel::-webkit-scrollbar {
   display: none;

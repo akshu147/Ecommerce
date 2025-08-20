@@ -5,16 +5,20 @@ import { IoMdCart } from 'react-icons/io'
 import Link from 'next/link'
 import { X, Minus, Plus, Trash2 } from 'lucide-react'
 import { Mycontext } from '../context/Authcontext'
-import AOS from "aos"
-import "aos/dist/aos.css"
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import { motion, AnimatePresence } from 'framer-motion'
+import { CiSearch } from "react-icons/ci";
+
 
 const Navbar = () => {
   const [showCart, setShowCart] = useState(false)
   const [showWishlist, setShowWishlist] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [wishlistItem, setWishlistItem] = useState([])
-  const {wishlistItems, setWishlistItems} = useContext(Mycontext)
-
+  const { wishlistItems, setWishlistItems } = useContext(Mycontext)
+   const [index, setIndex] = useState(0);
+   const [searchholdernames, setsearchholdername] = useState( ['Banana', 'Apple', 'Shirt', 'Pant'])
 
   const navitems = [
     { name: 'Home', link: '/' },
@@ -25,12 +29,11 @@ const Navbar = () => {
     { name: 'Document', link: '#' }
   ]
 
-   useEffect(()=> {
-    AOS.init({ duration: 800, once: true })  // 👈 AOS Init
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true }) // 👈 AOS Init
   }, [])
 
-
-  useEffect(()=> {
+  useEffect(() => {
     // const storedCart = localStorage.getItem('cartItems')
     const storedWishlist = localStorage.getItem('wishlist')
 
@@ -48,18 +51,34 @@ const Navbar = () => {
   // useEffect(()=> {
   //   localStorage.setItem("wishlist", JSON.stringify(wishlistItem))
   // }, [wishlistItem])
-  
 
-  const removeproductfromwishlist = (id)=> {
+  const removeproductfromwishlist = id => {
     const updatedWishlist = wishlistItems.filter(item => item.id !== id)
     setWishlistItems(updatedWishlist)
     localStorage.setItem('wishlist', JSON.stringify(updatedWishlist))
     console.log(id)
   }
+ 
 
-  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex(prev => (prev + 1) % searchholdernames.length)
+    }, 2000) // change every 2 sec
+    return () => clearInterval(interval)
+  }, [])
 
 
+
+  const updateplaceofsearchbar= (e)=> {
+    try {
+      const value = e.target.value;
+      const names = ['Banana', 'Apple', 'Shirt', 'Pant']
+      value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
+    }
+    catch(err) {
+      alert(err.message)
+    }
+  }
 
   return (
     <>
@@ -67,10 +86,10 @@ const Navbar = () => {
       <section className='flex justify-between items-center px-5 py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
         <div className='text-2xl font-bold cursor-pointer'>STARK</div>
 
-      <nav className='hidden md:block'>
+        <nav className='hidden md:block'>
           <ul className='flex gap-6 text-sm font-medium'>
             {navitems.map((item, idx) => (
-              <li key={idx} data-aos="fade-up" data-aos-delay={idx * 100}>
+              <li key={idx} data-aos='fade-up' data-aos-delay={idx * 100}>
                 <Link
                   href={item.link}
                   className='px-2 py-1 block rounded hover:bg-gray-100'
@@ -81,6 +100,63 @@ const Navbar = () => {
             ))}
           </ul>
         </nav>
+
+        <div className='flex justify-center'>
+  <div className='relative w-96'>
+    <input
+      type='text'
+      className='w-full px-4 py-2 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400'
+      onChange={updateplaceofsearchbar} // ✅ fixed
+      placeholder=''
+    />
+    {/* Animated placeholder overlay */}
+    <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
+      <AnimatePresence mode='wait'>
+        <motion.span
+          key={searchholdernames[index]}
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -20, opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className='absolute'
+        >
+          {searchholdernames[index]}
+        </motion.span>
+      </AnimatePresence>
+    </div>
+  </div>
+</div>
+
+        
+
+        <div className='justify-center md-block hidden'>
+          <div className='relative w-96'>
+            <input
+              type='text'
+              className='w-full px-4 py-2 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400'
+              onChange={updateplaceofsearchbar} 
+              placeholder=''
+            />
+            {/* Animated placeholder overlay */}
+            <div className='absolute left-4 top-2 text-gray-500 pointer-events-none w-full'>
+              <AnimatePresence mode='wait'>
+                <motion.span
+                  key={searchholdernames[index]}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className='absolute'
+                >
+                  {searchholdernames[index]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+
+        <i className='block md:hidden'><CiSearch /></i>
 
         <div className='flex items-center gap-2'>
           <button className='p-1 px-3 bg-black text-white rounded hidden sm:block'>
@@ -210,7 +286,7 @@ const Navbar = () => {
                 </div>
               </div>
               <button
-                onClick={()=> removeproductfromwishlist(item.id)}
+                onClick={() => removeproductfromwishlist(item.id)}
                 className='bg-black text-white text-sm px-4 py-1 rounded-full'
               >
                 Remove
