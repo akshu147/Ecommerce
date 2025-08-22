@@ -1,5 +1,3 @@
-
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -12,10 +10,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.dummyjson.com",
       },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
+      {
+        protocol: "https",
+        hostname: "w0.peakpx.com",
+      },
     ],
-     domains: ["i.pravatar.cc"],
   },
 };
 
 module.exports = nextConfig;
-

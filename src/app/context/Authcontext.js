@@ -6,9 +6,13 @@ export const Mycontext = createContext()
 
 const Authcontext = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState([])
+    const [dummydata, setDummyData] = useState([])
+    const [query, setQuery] = useState('') //for search functionality
+    
+  
 
   return (
-    <Mycontext.Provider value={{ wishlistItems, setWishlistItems }}>
+    <Mycontext.Provider value={{ wishlistItems, setWishlistItems, dummydata, setDummyData, query, setQuery  }}>
       {children}
     </Mycontext.Provider>
   )

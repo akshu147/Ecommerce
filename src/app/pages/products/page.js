@@ -4,15 +4,15 @@ import Head from '../../componants/Head'
 import Navbar from '../../componants/Navbar'
 import { GoHeartFill } from 'react-icons/go'
 import axios from 'axios'
-import { Mycontext} from '../../context/Authcontext'
+import { Mycontext } from '../../context/Authcontext'
 import { useRouter } from 'next/navigation'
-import Image from "next/image";
-
-
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Page () {
   const nav = useRouter()
-  const {wishlistItems, setWishlistItems} = useContext(Mycontext)
+  const { wishlistItems, setWishlistItems, setDummyData, dummydata } =
+    useContext(Mycontext)
 
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -20,16 +20,17 @@ export default function Page () {
   const [maxPrice, setMaxPrice] = useState(1000)
   const [categories, setCategories] = useState([])
   const brands = ['WoodCraft', 'FurniHouse', 'HomeLux', 'ComfortLine']
-  const [dummydata, setDummyData] = useState([])
+  // const [dummydata, setDummyData] = useState([])
   const [loading, setLoading] = useState(false)
-console.log(wishlistItems)
-  
+  console.log(wishlistItems)
 
   // Fetch products
   const fetchDummyData = async () => {
     setLoading(true)
     try {
-      const allProduct = await axios.get('https://dummyjson.com/products?limit=100')
+      const allProduct = await axios.get(
+        'https://dummyjson.com/products?limit=100'
+      )
       setDummyData(allProduct.data.products)
 
       const allCategories = [
@@ -46,53 +47,40 @@ console.log(wishlistItems)
     fetchDummyData()
   }, [])
 
-
   useEffect(() => {
-    const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-      setWishlistItems(savedWishlist);
-  }, [setWishlistItems]);
+    const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || []
+    setWishlistItems(savedWishlist)
+  }, [setWishlistItems])
 
-  const addToWishlist = (product) => {
-    if(wishlistItems.some(item => item.id === product.id)) return alert('Already in wishlist');
+  const addToWishlist = product => {
+    if (wishlistItems.some(item => item.id === product.id))
+      return alert('Already in wishlist')
     if (!wishlistItems.some(item => item.id === product.id)) {
-      const updated = [...wishlistItems, product];
-      setWishlistItems(updated);
-      localStorage.setItem('wishlist', JSON.stringify(updated));
+      const updated = [...wishlistItems, product]
+      setWishlistItems(updated)
+      localStorage.setItem('wishlist', JSON.stringify(updated))
     }
-  };
-
+  }
 
   // Filtered products
   const allProductData = dummydata.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = !selectedCategory || p.category.toLowerCase() === selectedCategory.toLowerCase()
-    const matchesBrand = !selectedBrand || p.brand?.toLowerCase() === selectedBrand.toLowerCase()
+    const matchesSearch = p.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+    const matchesCategory =
+      !selectedCategory ||
+      p.category.toLowerCase() === selectedCategory.toLowerCase()
+    const matchesBrand =
+      !selectedBrand || p.brand?.toLowerCase() === selectedBrand.toLowerCase()
     const matchesPrice = p.price <= maxPrice
     return matchesSearch && matchesCategory && matchesBrand && matchesPrice
   })
-
-  // add product to cart
- const addToCartWithServer = async () => {
-  try {
-    // Example check for authentication
-    if (!localStorage.getItem("token")) {
-      nav.push("/pages/login");
-      return;
-    }
-    console.log("Server response:", response.data);
-  } catch (err) {
-    console.error("Error adding to cart:", err.response?.data || err.message);
-  }
-};
-
-
 
   return (
     <>
       <Head />
       <Navbar />
       <div className='flex flex-col md:flex-row p-5 items-start justify-between'>
-        
         {/* Sidebar */}
         <aside className='w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6'>
           <input
@@ -116,7 +104,7 @@ console.log(wishlistItems)
               </label>
             ))}
             <button
-              className='mt-2 text-sm text-blue-600 underline'
+              className='mt-2 text-sm bg-black text-white p-[2px_5px] rounded-md font-bold'
               onClick={() => setSelectedCategory('')}
             >
               Clear Category
@@ -137,7 +125,7 @@ console.log(wishlistItems)
               </label>
             ))}
             <button
-              className='mt-2 text-sm text-blue-600 underline'
+              className='mt-2 text-sm bg-black text-white p-[2px_5px] rounded-md font-bold'
               onClick={() => setSelectedBrand('')}
             >
               Clear Brand
@@ -157,9 +145,11 @@ console.log(wishlistItems)
         </aside>
 
         {/* Products */}
-        <main className='product-ui w-full border border-amber-300 grid grid-cols-3 sm:grid-cols-3 md:p-4 h-[100vh] lg:grid-cols-6 sm:gap-[3] md:gap-[4] lg:gap-[5] gap-2 overflow-y-auto'>
+        <main className='product-ui w-full grid grid-cols-3 sm:grid-cols-3 md:p-4 h-[100vh] lg:grid-cols-6 sm:gap-[3] md:gap-[4] lg:gap-[5] gap-2 overflow-y-auto'>
           {loading ? (
-            <p className='col-span-full text-center text-gray-500'>Loading...</p>
+            <p className='col-span-full text-center text-gray-500'>
+              Loading...
+            </p>
           ) : allProductData.length ? (
             allProductData.map((product, index) => (
               <div
@@ -171,7 +161,11 @@ console.log(wishlistItems)
                   onClick={() => addToWishlist(product)}
                 >
                   <GoHeartFill
-                    className={`w-[16px] ${wishlistItems.some(item => item.id === product.id) ? 'text-red-500' : 'text-gray-400'}`}
+                    className={`w-[16px] ${
+                      wishlistItems.some(item => item.id === product.id)
+                        ? 'text-red-500'
+                        : 'text-gray-400'
+                    }`}
                   />
                 </i>
                 <Image
@@ -180,29 +174,30 @@ console.log(wishlistItems)
                   height={10}
                   alt={product.title}
                   unoptimized
-                  className='w-full h-40 object-cover rounded transition-transform duration-300 hover:scale-110'
+                  className='w-full h-40 object-cover rounded transition-transform duration-300 hover:scale-110 border'
                 />
                 <div className='hidden md:block'>
-                   <h3 className='font-semibold text-lg mt-2'>{product.title}</h3>
-                <p className='text-gray-500 mb-1'>{product.brand}</p>
-                <p className='font-bold text-xl'>rs{product.price}</p>
-                <button
-                  onClick={addToCartWithServer}
-                  className='mt-2 w-full py-1 bg-black text-white rounded hover:bg-gray-700'
-                >
-                  {/* {wishlistItems.some(item => item.id === product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'} */}
-                  Add to cart
-                </button>
+                  <h3 className='font-semibold text-lg mt-2'>
+                    {product.title}
+                  </h3>
+                  <p className='text-gray-500 mb-1'>{product.brand}</p>
+                  <p className='font-bold text-xl'>rs{product.price}</p>
+
+                  <button className='mt-2 w-full py-1 bg-black text-white rounded hover:bg-gray-700'>
+                    <Link href={`/pages/detail/${product.id}?name=${encodeURIComponent(product.title)}&price=${product.price}&image=${encodeURIComponent(product.thumbnail)}&brand=${encodeURIComponent(product.brand || '')}&description=${encodeURIComponent(product.description || '')}`}>
+                      View Details
+                    </Link>
+                  </button>
                 </div>
-               
               </div>
             ))
           ) : (
-            <p className='col-span-full text-center text-gray-500'>No products found.</p>
+            <p className='col-span-full text-center text-gray-500'>
+              No products found.
+            </p>
           )}
         </main>
       </div>
     </>
   )
 }
-

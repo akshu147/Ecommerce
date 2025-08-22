@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useContext, useEffect, useState } from 'react'
 import { IoMdCart } from 'react-icons/io'
 import Link from 'next/link'
@@ -8,17 +7,27 @@ import { Mycontext } from '../context/Authcontext'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CiSearch } from "react-icons/ci";
-
+import { CiSearch } from 'react-icons/ci'
+import { FaSearch } from 'react-icons/fa'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
   const [showCart, setShowCart] = useState(false)
   const [showWishlist, setShowWishlist] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [wishlistItem, setWishlistItem] = useState([])
-  const { wishlistItems, setWishlistItems } = useContext(Mycontext)
-   const [index, setIndex] = useState(0);
-   const [searchholdernames, setsearchholdername] = useState( ['Banana', 'Apple', 'Shirt', 'Pant'])
+  const { wishlistItems, setWishlistItems, query, setQuery } =
+    useContext(Mycontext)
+  const [index, setIndex] = useState(0)
+  const [suggestions, setSuggestions] = useState([]) // for search functionality
+  const nav = useRouter()
+  const [searchholdernames, setsearchholdername] = useState([
+    'Banana',
+    'Apple',
+    'Shirt',
+    'Pant'
+  ])
 
   const navitems = [
     { name: 'Home', link: '/' },
@@ -58,7 +67,6 @@ const Navbar = () => {
     localStorage.setItem('wishlist', JSON.stringify(updatedWishlist))
     console.log(id)
   }
- 
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -67,18 +75,37 @@ const Navbar = () => {
     return () => clearInterval(interval)
   }, [])
 
-
-
-  const updateplaceofsearchbar= (e)=> {
+  const updateplaceofsearchbar = e => {
     try {
-      const value = e.target.value;
+      const value = e.target.value
       const names = ['Banana', 'Apple', 'Shirt', 'Pant']
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
-    }
-    catch(err) {
+      setQuery(e.target.value) // for searh queary
+    } catch (err) {
       alert(err.message)
     }
   }
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (query.length < 2) {
+        setSuggestions([])
+        return
+      }
+
+      try {
+        const res = await axios.get(
+          `http://localhost:4000/api/user/search?name=${query}`
+        )
+        setSuggestions(res.data.results)
+      } catch (err) {
+        console.error(err.message)
+      }
+    }
+
+    const delay = setTimeout(fetchSuggestions, 100)
+    return () => clearTimeout(delay)
+  }, [query])
 
   return (
     <>
@@ -101,44 +128,33 @@ const Navbar = () => {
           </ul>
         </nav>
 
-        <div className='flex justify-center'>
-  <div className='relative w-96'>
-    <input
-      type='text'
-      className='w-full px-4 py-2 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400'
-      onChange={updateplaceofsearchbar} // ✅ fixed
-      placeholder=''
-    />
-    {/* Animated placeholder overlay */}
-    <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
-      <AnimatePresence mode='wait'>
-        <motion.span
-          key={searchholdernames[index]}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -20, opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className='absolute'
-        >
-          {searchholdernames[index]}
-        </motion.span>
-      </AnimatePresence>
-    </div>
-  </div>
-</div>
-
-        
-
-        <div className='justify-center md-block hidden'>
-          <div className='relative w-96'>
+        <form className='justify-center'>
+          <div className='relative w-96 flex'>
             <input
               type='text'
               className='w-full px-4 py-2 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400'
-              onChange={updateplaceofsearchbar} 
+              onChange={updateplaceofsearchbar} // ✅ fixed
               placeholder=''
+              value={query}
             />
+            {suggestions.length > 0 && (
+              <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+                {suggestions.map((item, i) => (
+                  <li
+                    key={i}
+                    className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
+                    onClick={() => {
+                      setQuery(item.name), setSuggestions([])
+                    }}
+                  >
+                    {item.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+
             {/* Animated placeholder overlay */}
-            <div className='absolute left-4 top-2 text-gray-500 pointer-events-none w-full'>
+            <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
               <AnimatePresence mode='wait'>
                 <motion.span
                   key={searchholdernames[index]}
@@ -152,11 +168,21 @@ const Navbar = () => {
                 </motion.span>
               </AnimatePresence>
             </div>
+            <div
+              onClick={() => nav.push('/pages/products')}
+              className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
+            >
+              <FaSearch />
+            </div>
           </div>
-        </div>
+        </form>
 
-
-        <i className='block md:hidden'><CiSearch /></i>
+        <i
+          className='block md:hidden'
+          onClick={() => nav.push('/pages/products')}
+        >
+          <CiSearch />
+        </i>
 
         <div className='flex items-center gap-2'>
           <button className='p-1 px-3 bg-black text-white rounded hidden sm:block'>
@@ -258,9 +284,12 @@ const Navbar = () => {
 
       {/* Wishlist Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:max-w-[400px] bg-gradient-to-br from-purple-300 via-blue-200 to-gray-300 p-6 rounded-2xl shadow-xl z-50 transition-transform duration-500 ease-in-out ${
-          showWishlist ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed top-0 right-0 h-full w-full sm:max-w-[400px] 
+  bg-gradient-to-br from-purple-300 via-blue-200 to-gray-300 
+  p-6 rounded-2xl shadow-xl z-50 transform transition-transform 
+  duration-500 ease-in-out ${
+    showWishlist ? 'translate-x-0' : 'translate-x-full'
+  }`}
       >
         <div className='flex justify-between items-center p-4 border-b sticky top-0 bg-white z-60'>
           <h2 className='text-lg font-semibold'>Wishlist</h2>
@@ -287,7 +316,7 @@ const Navbar = () => {
               </div>
               <button
                 onClick={() => removeproductfromwishlist(item.id)}
-                className='bg-black text-white text-sm px-4 py-1 rounded-full'
+                className='bg-black text-white text-sm px-4 py-1 rounded-md'
               >
                 Remove
               </button>
@@ -306,6 +335,20 @@ const Navbar = () => {
           }}
         />
       )}
+      <div className='hidden lg:block'>
+        <div className='flex justify-evenly bg-black text-white text-[14px] mx-[100px] rounded-bl-[20px] rounded-br-[20px]'>
+          <div className='cursor-pointer font-bold'>Chair</div>
+          <div className='cursor-pointer font-bold'>Sofa</div>
+          <div className='cursor-pointer font-bold'>Double bad</div>
+          <div className='cursor-pointer font-bold'>Coffee Table</div>
+          <div className='cursor-pointer font-bold'>Sectional Sofa</div>
+          <div className='cursor-pointer font-bold'>Bookshelf</div>
+          <div className='cursor-pointer font-bold'>google</div>
+          <div className='cursor-pointer font-bold'>google</div>
+          <div className='cursor-pointer font-bold'>google</div>
+          <div className='cursor-pointer font-bold'>google</div>
+        </div>
+      </div>
     </>
   )
 }
