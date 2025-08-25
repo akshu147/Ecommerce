@@ -138,8 +138,8 @@ export default function HomePage () {
                 <FiTruck /> Free Shipping over $99
               </p>
               <h1 className='text-4xl md:text-6xl font-extrabold leading-tight tracking-tight'>
-                Work That We Produce For Our{' '}
-                <span className='text-emerald-600'>Customers</span>
+                Transform your home with elegance and{' '}
+                <span className='text-emerald-600'>style</span>
               </h1>
               <p className='mt-5 text-gray-600 md:text-lg'>
                 Los Angeles search engine marketing agency with years of
@@ -507,67 +507,83 @@ function Feature ({ icon, title, subtitle }) {
 function Footer () {
   const year = new Date().getFullYear()
   return (
-    <footer className='bg-[#1e2224] text-white mt-12 rounded-[10px]'>
-      <div className='container mx-auto px-4 py-14 grid md:grid-cols-4 gap-10'>
-        <div>
-          <h3 className='text-2xl font-extrabold'>STARK</h3>
-          <p className='text-white/80 mt-3'>
-            High‑quality gadgets at honest prices. Free shipping above $99.
-          </p>
-        </div>
-        <div>
-          <p className='font-semibold mb-3'>Shop</p>
-          <ul className='space-y-2 text-white/80'>
-            <li>
-              <a href='#'>Watches</a>
-            </li>
-            <li>
-              <a href='#'>Headphones</a>
-            </li>
-            <li>
-              <a href='#'>Accessories</a>
-            </li>
-            <li>
-              <a href='#'>Gift Cards</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p className='font-semibold mb-3'>Support</p>
-          <ul className='space-y-2 text-white/80'>
-            <li>
-              <a href='#'>Help Center</a>
-            </li>
-            <li>
-              <a href='#'>Shipping</a>
-            </li>
-            <li>
-              <a href='#'>Returns</a>
-            </li>
-            <li>
-              <a href='#'>Warranty</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p className='font-semibold mb-3'>Newsletter</p>
-          <form className='flex gap-2'>
-            <input
-              className='w-full px-4 py-2 rounded-lg text-black'
-              placeholder='Your email'
-            />
-            <button className='px-4 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200'>
-              Join
-            </button>
-          </form>
-        </div>
-      </div>
-      <div className='border-t border-white/10'>
-        <div className='container mx-auto px-4 py-6 text-sm text-white/70 flex flex-col md:flex-row items-center justify-between gap-2'>
-          <p>© {year} STARK. All rights reserved.</p>
-          <p>Privacy • Terms • Cookies</p>
-        </div>
-      </div>
-    </footer>
+  <footer className='bg-[#1e2224] text-white mt-12 rounded-[10px]'>
+  <div className='container mx-auto px-4 py-14 grid md:grid-cols-4 gap-10'>
+    {/* Brand Info */}
+    <div>
+      <h3 className='text-2xl font-extrabold'>FURNISTAR</h3>
+      <p className='text-white/80 mt-3'>
+        Premium-quality furniture for your home & office. Free shipping on orders over $199.
+      </p>
+    </div>
+
+    {/* Shop Categories */}
+    <div>
+      <p className='font-semibold mb-3'>Shop</p>
+      <ul className='space-y-2 text-white/80'>
+        <li>
+          <a href='#'>Living Room</a>
+        </li>
+        <li>
+          <a href='#'>Bedroom</a>
+        </li>
+        <li>
+          <a href='#'>Dining Room</a>
+        </li>
+        <li>
+          <a href='#'>Office Furniture</a>
+        </li>
+        <li>
+          <a href='#'>Outdoor & Garden</a>
+        </li>
+      </ul>
+    </div>
+
+    {/* Support */}
+    <div>
+      <p className='font-semibold mb-3'>Support</p>
+      <ul className='space-y-2 text-white/80'>
+        <li>
+          <a href='#'>Help Center</a>
+        </li>
+        <li>
+          <a href='#'>Shipping & Delivery</a>
+        </li>
+        <li>
+          <a href='#'>Returns & Exchanges</a>
+        </li>
+        <li>
+          <a href='#'>Warranty & Assembly</a>
+        </li>
+      </ul>
+    </div>
+
+    {/* Newsletter */}
+    <div>
+      <p className='font-semibold mb-3'>Newsletter</p>
+      <form className='flex gap-2'>
+        <input
+          className='w-full px-4 py-2 rounded-lg text-black'
+          placeholder='Your email'
+        />
+        <button className='px-4 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200'>
+          Subscribe
+        </button>
+      </form>
+      <p className='text-white/60 mt-2 text-sm'>
+        Get updates on new arrivals, exclusive offers, and furniture tips.
+      </p>
+    </div>
+  </div>
+
+  {/* Bottom Bar */}
+  <div className='border-t border-white/10'>
+    <div className='container mx-auto px-4 py-6 text-sm text-white/70 flex flex-col md:flex-row items-center justify-between gap-2'>
+      <p>© {new Date().getFullYear()} FURNISTAR. All rights reserved.</p>
+      <p>Privacy • Terms • Cookies</p>
+    </div>
+  </div>
+</footer>
+
   )
 }

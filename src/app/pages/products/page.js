@@ -1,102 +1,102 @@
-'use client'
-import { useContext, useEffect, useState } from 'react'
-import Head from '../../componants/Head'
-import Navbar from '../../componants/Navbar'
-import { GoHeartFill } from 'react-icons/go'
-import axios from 'axios'
-import { Mycontext } from '../../context/Authcontext'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import Link from 'next/link'
+"use client";
+import { useContext, useEffect, useState } from "react";
+import Head from "../../componants/Head";
+import Navbar from "../../componants/Navbar";
+import { GoHeart, GoHeartFill } from "react-icons/go";
+import { FiShoppingCart } from "react-icons/fi";
+import axios from "axios";
+import { Mycontext } from "../../context/Authcontext";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
-export default function Page () {
-  const nav = useRouter()
+export default function Page() {
+  const nav = useRouter();
   const { wishlistItems, setWishlistItems, setDummyData, dummydata } =
-    useContext(Mycontext)
+    useContext(Mycontext);
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedBrand, setSelectedBrand] = useState('')
-  const [maxPrice, setMaxPrice] = useState(1000)
-  const [categories, setCategories] = useState([])
-  const brands = ['WoodCraft', 'FurniHouse', 'HomeLux', 'ComfortLine']
-  // const [dummydata, setDummyData] = useState([])
-  const [loading, setLoading] = useState(false)
-  console.log(wishlistItems)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [categories, setCategories] = useState([]);
+  const brands = ["WoodCraft", "FurniHouse", "HomeLux", "ComfortLine"];
+  const [loading, setLoading] = useState(false);
 
   // Fetch products
   const fetchDummyData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const allProduct = await axios.get(
-        'https://dummyjson.com/products?limit=100'
-      )
-      setDummyData(allProduct.data.products)
+        "https://dummyjson.com/products?limit=100"
+      );
+      setDummyData(allProduct.data.products);
 
       const allCategories = [
-        ...new Set(allProduct.data.products.map(p => p.category))
-      ]
-      setCategories(allCategories)
+        ...new Set(allProduct.data.products.map((p) => p.category)),
+      ];
+      setCategories(allCategories);
     } catch (err) {
-      console.log('Error fetching data:', err)
+      console.log("Error fetching data:", err);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetchDummyData()
-  }, [])
+    fetchDummyData();
+  }, []);
 
   useEffect(() => {
-    const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || []
-    setWishlistItems(savedWishlist)
-  }, [setWishlistItems])
+    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setWishlistItems(savedWishlist);
+  }, [setWishlistItems]);
 
-  const addToWishlist = product => {
-    if (wishlistItems.some(item => item.id === product.id))
-      return alert('Already in wishlist')
-    if (!wishlistItems.some(item => item.id === product.id)) {
-      const updated = [...wishlistItems, product]
-      setWishlistItems(updated)
-      localStorage.setItem('wishlist', JSON.stringify(updated))
-    }
-  }
+  const addToWishlist = (product) => {
+    if (wishlistItems.some((item) => item.id === product.id))
+      return alert("Already in wishlist");
+    const updated = [...wishlistItems, product];
+    setWishlistItems(updated);
+    localStorage.setItem("wishlist", JSON.stringify(updated));
+  };
+
+  const isInWishlist = (id) => wishlistItems.some((item) => item.id === id);
 
   // Filtered products
-  const allProductData = dummydata.filter(p => {
+  const allProductData = dummydata.filter((p) => {
     const matchesSearch = p.title
       .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+      .includes(searchTerm.toLowerCase());
     const matchesCategory =
       !selectedCategory ||
-      p.category.toLowerCase() === selectedCategory.toLowerCase()
+      p.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesBrand =
-      !selectedBrand || p.brand?.toLowerCase() === selectedBrand.toLowerCase()
-    const matchesPrice = p.price <= maxPrice
-    return matchesSearch && matchesCategory && matchesBrand && matchesPrice
-  })
+      !selectedBrand || (p.brand && p.brand.toLowerCase() === selectedBrand.toLowerCase());
+    const matchesPrice = p.price <= maxPrice;
+    return matchesSearch && matchesCategory && matchesBrand && matchesPrice;
+  });
 
   return (
     <>
       <Head />
       <Navbar />
-      <div className='flex flex-col md:flex-row p-5 items-start justify-between'>
+      <div className="flex flex-col md:flex-row p-5 items-start justify-between">
         {/* Sidebar */}
-        <aside className='w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6'>
+        <aside className="w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6">
           <input
-            type='text'
+            type="text"
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder='Search products...'
-            className='w-full p-2 border rounded'
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search products..."
+            className="w-full p-2 border rounded"
           />
           <div>
-            <h2 className='font-bold mb-2'>Category</h2>
-            {categories.map(cat => (
-              <label key={cat} className='block cursor-pointer'>
+            <h2 className="font-bold mb-2">Category</h2>
+            {categories.map((cat) => (
+              <label key={cat} className="block cursor-pointer">
                 <input
-                  type='radio'
-                  className='mr-2'
+                  type="radio"
+                  className="mr-2"
                   checked={selectedCategory.toLowerCase() === cat.toLowerCase()}
                   onChange={() => setSelectedCategory(cat)}
                 />
@@ -104,20 +104,20 @@ export default function Page () {
               </label>
             ))}
             <button
-              className='mt-2 text-sm bg-black text-white p-[2px_5px] rounded-md font-bold'
-              onClick={() => setSelectedCategory('')}
+              className="mt-2 text-sm bg-black text-white p-[2px_5px] rounded-md font-bold"
+              onClick={() => setSelectedCategory("")}
             >
               Clear Category
             </button>
           </div>
+
           <div>
-            <h2 className='font-bold mb-2'>Brand</h2>
-            {brands.map(brand => (
-              <label key={brand} className='block cursor-pointer'>
+            <h2 className="font-bold mb-2">Brand</h2>
+            {brands.map((brand) => (
+              <label key={brand} className="block cursor-pointer">
                 <input
-                  type='radio'
-                  name='brand'
-                  className='mr-2'
+                  type="radio"
+                  className="mr-2"
                   checked={selectedBrand.toLowerCase() === brand.toLowerCase()}
                   onChange={() => setSelectedBrand(brand)}
                 />
@@ -125,79 +125,105 @@ export default function Page () {
               </label>
             ))}
             <button
-              className='mt-2 text-sm bg-black text-white p-[2px_5px] rounded-md font-bold'
-              onClick={() => setSelectedBrand('')}
+              className="mt-2 text-sm bg-black text-white p-[2px_5px] rounded-md font-bold"
+              onClick={() => setSelectedBrand("")}
             >
               Clear Brand
             </button>
           </div>
+
           <div>
-            <h2 className='font-bold mb-2'>Max Price: ${maxPrice}</h2>
+            <h2 className="font-bold mb-2">Max Price: ${maxPrice}</h2>
             <input
-              type='range'
-              min='0'
-              max='1000'
+              type="range"
+              min="0"
+              max="1000"
               value={maxPrice}
-              onChange={e => setMaxPrice(+e.target.value)}
-              className='w-full'
+              onChange={(e) => setMaxPrice(+e.target.value)}
+              className="w-full"
             />
           </div>
         </aside>
 
-        {/* Products */}
-        <main className='product-ui w-full grid grid-cols-3 sm:grid-cols-3 md:p-4 h-[100vh] lg:grid-cols-6 sm:gap-[3] md:gap-[4] lg:gap-[5] gap-2 overflow-y-auto'>
+        {/* Products Grid */}
+        <main className="product-ui w-full md:w-4/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 overflow-y-auto">
           {loading ? (
-            <p className='col-span-full text-center text-gray-500'>
-              Loading...
-            </p>
+            <div className="col-span-full text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading products...</p>
+            </div>
           ) : allProductData.length ? (
             allProductData.map((product, index) => (
-              <div
-                key={index}
-                className='border rounded-lg shadow relative transition-shadow md:p-4 duration-300 hover:shadow-xl border-blue-300'
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden group"
               >
-                <i
-                  className='absolute top-2 right-2 text-xl cursor-pointer'
-                  onClick={() => addToWishlist(product)}
-                >
-                  <GoHeartFill
-                    className={`w-[16px] ${
-                      wishlistItems.some(item => item.id === product.id)
-                        ? 'text-red-500'
-                        : 'text-gray-400'
-                    }`}
-                  />
-                </i>
-                <Image
-                  src={product.thumbnail}
-                  width={10}
-                  height={10}
-                  alt={product.title}
-                  unoptimized
-                  className='w-full h-40 object-cover rounded transition-transform duration-300 hover:scale-110 border'
-                />
-                <div className='hidden md:block'>
-                  <h3 className='font-semibold text-lg mt-2'>
-                    {product.title}
-                  </h3>
-                  <p className='text-gray-500 mb-1'>{product.brand}</p>
-                  <p className='font-bold text-xl'>rs{product.price}</p>
+                <div className="relative">
+                  <Link
+                    href={`/pages/detail/${product.id}?name=${encodeURIComponent(
+                      product.title
+                    )}&price=${product.price}&image=${encodeURIComponent(
+                      product.thumbnail
+                    )}&brand=${encodeURIComponent(
+                      product.brand || ""
+                    )}&description=${encodeURIComponent(product.description || "")}`}
+                  >
+                    <Image
+                      src={product.thumbnail}
+                      width={300}
+                      height={200}
+                      alt={product.title}
+                      unoptimized
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </Link>
 
-                  <button className='mt-2 w-full py-1 bg-black text-white rounded hover:bg-gray-700'>
-                    <Link href={`/pages/detail/${product.id}?name=${encodeURIComponent(product.title)}&price=${product.price}&image=${encodeURIComponent(product.thumbnail)}&brand=${encodeURIComponent(product.brand || '')}&description=${encodeURIComponent(product.description || '')}`}>
-                      View Details
-                    </Link>
+                  {/* Wishlist Button */}
+                  <button
+                    onClick={() => addToWishlist(product)}
+                    className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors"
+                  >
+                    {isInWishlist(product.id) ? (
+                      <GoHeartFill className="w-5 h-5 text-red-500" />
+                    ) : (
+                      <GoHeart className="w-5 h-5 text-gray-400" />
+                    )}
                   </button>
                 </div>
-              </div>
+
+                <div className="p-4">
+                  <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                    {product.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">{product.brand}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-bold text-xl text-blue-600">
+                      ${product.price}
+                    </p>
+                    <span className="text-sm text-green-600 bg-green-100 px-2 py-1 rounded">
+                      {product.discountPercentage}% off
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                    {product.description}
+                  </p>
+                </div>
+              </motion.div>
             ))
           ) : (
-            <p className='col-span-full text-center text-gray-500'>
-              No products found.
-            </p>
+            <div className="col-span-full text-center py-12">
+              <div className="text-6xl mb-4">🛒</div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-500">Try adjusting your search filters</p>
+            </div>
           )}
         </main>
       </div>
     </>
-  )
+  );
 }
