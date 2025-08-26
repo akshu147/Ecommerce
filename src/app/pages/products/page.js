@@ -235,7 +235,7 @@ export default function Page() {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center my-8">
+        <div className="flex justify-center items-center my-8"> 
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
