@@ -94,9 +94,9 @@ export default function Page() {
     <>
       <Head />
       <Navbar />
-      <div className="flex flex-col md:flex-row p-5 items-start justify-between">
+      <div className="flex flex-col md:flex-row p-5 items-start justify-between ">
         {/* Sidebar */}
-        <aside className="w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6">
+        <aside className="w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6 border-[4px] border-red-500 hidden md:block">
    
           <div>
             <h2 className="font-bold mb-2">Category</h2>
@@ -154,7 +154,7 @@ export default function Page() {
         </aside>
 
         {/* Products Grid */}
-        <main className="product-ui w-full md:w-4/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 overflow-y-auto">
+        <main className="product-ui w-full md:w-4/5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 overflow-y-auto">
           {loading ? (
             <div className="col-span-full text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
