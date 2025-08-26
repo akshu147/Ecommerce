@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { IoMdCart } from 'react-icons/io'
 import Link from 'next/link'
 import { X, Minus, Plus, Trash2 } from 'lucide-react'
@@ -11,6 +11,7 @@ import { FaSearch } from 'react-icons/fa'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { MdOutlineMenu } from 'react-icons/md'
+import { debounce } from '../../utils/debounce'
 
 const Navbar = () => {
   const [showCart, setShowCart] = useState(false)
@@ -18,10 +19,11 @@ const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [wishlistItem, setWishlistItem] = useState([])
-  const { wishlistItems, setWishlistItems, query, setQuery } =
+  const { wishlistItems, setWishlistItems, query, setQuery, searchTerm, setSearchTerm } =
     useContext(Mycontext)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([]) // for search functionality
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false) // loading state
   const nav = useRouter()
   const [searchholdernames, setsearchholdername] = useState([
     'Banana',
@@ -29,7 +31,6 @@ const Navbar = () => {
     'Shirt',
     'Pant'
   ])
-
   const navitems = [
     { name: 'Home', link: '/' },
     { name: 'About', link: '/pages/about' },
@@ -78,10 +79,12 @@ const Navbar = () => {
 
   const updateplaceofsearchbar = e => {
     try {
+      if(!e.target.value) {setSearchTerm("")}
       const value = e.target.value
       const names = ['Banana', 'Apple', 'Shirt', 'Pant']
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
-      setQuery(e.target.value) // for searh queary
+      setQuery(e.target.value)
+       // for searh queary
     } catch (err) {
       alert(err.message)
     }
@@ -104,8 +107,12 @@ const Navbar = () => {
       }
     }
 
-    const delay = setTimeout(fetchSuggestions, 100)
-    return () => clearTimeout(delay)
+    const debouncedFetchSuggestions = debounce(fetchSuggestions, 300)
+    debouncedFetchSuggestions()
+    
+    return () => {
+      debouncedFetchSuggestions.cancel?.()
+    }
   }, [query])
 
   const furnitureCategories = [
@@ -180,11 +187,6 @@ const Navbar = () => {
     }
   ]
 
-  console.log(
-    furnitureCategories.map(cat => {
-      console.log(cat)
-    })
-  )
 
   return (
     <>
@@ -243,14 +245,25 @@ const Navbar = () => {
               placeholder=''
               value={query}
             />
-            {suggestions.length > 0 && (
+            {loadingSuggestions && (
+              <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+                <div className='px-4 py-2 text-center text-gray-500'>
+                  <div className='inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2'></div>
+                  Loading suggestions...
+                </div>
+              </div>
+            )}
+            {!loadingSuggestions && suggestions.length > 0 && (
               <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
                 {suggestions.map((item, i) => (
                   <li
                     key={i}
                     className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
                     onClick={() => {
-                      setQuery(item.name), setSuggestions([])
+                      setQuery(item.name);
+                      setSuggestions([]);
+                      setSearchTerm(item.name);
+                      nav.push('/pages/products');
                     }}
                   >
                     {item.name}
@@ -275,7 +288,7 @@ const Navbar = () => {
               </AnimatePresence>
             </div>
             <div
-              onClick={() => nav.push('/pages/products')}
+              onClick={() => {setSearchTerm(query),setSuggestions([]),nav.push('/pages/products')}}
               className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
             >
               <FaSearch />
@@ -497,14 +510,25 @@ const Navbar = () => {
             placeholder=''
             value={query}
           />
-          {suggestions.length > 0 && (
+          {loadingSuggestions && (
+            <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+              <div className='px-4 py-2 text-center text-gray-500'>
+                <div className='inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2'></div>
+                Loading suggestions...
+              </div>
+            </div>
+          )}
+          {!loadingSuggestions && suggestions.length > 0 && (
             <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
               {suggestions.map((item, i) => (
                 <li
                   key={i}
                   className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
                   onClick={() => {
-                    setQuery(item.name), setSuggestions([])
+                    setQuery(item.name);
+                    setSuggestions([]);
+                    setSearchTerm(item.name);
+                    nav.push('/pages/products');
                   }}
                 >
                   {item.name}
@@ -529,7 +553,7 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
           <div
-            onClick={() => nav.push('/pages/products')}
+            onClick={() => {setSearchTerm(query),setSuggestions([]),nav.push('/pages/products')}}
             className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
           >
             <FaSearch />

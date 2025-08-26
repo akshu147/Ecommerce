@@ -8,6 +8,7 @@ const Authcontext = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState([])
   const [dummydata, setDummyData] = useState([])
   const [query, setQuery] = useState('') // for search functionality
+    const [searchTerm, setSearchTerm] = useState("");
 
   // Load wishlist from localStorage on mount
   React.useEffect(() => {
@@ -51,7 +52,9 @@ const Authcontext = ({ children }) => {
       setQuery,
       addToWishlist,
       removeFromWishlist,
-      isInWishlist
+      isInWishlist,
+      searchTerm,
+      setSearchTerm
     }}>
         {children}
     </Mycontext.Provider>

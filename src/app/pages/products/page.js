@@ -12,17 +12,19 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function Page() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15; // Number of products per page
   const nav = useRouter();
-  const { wishlistItems, setWishlistItems, setDummyData, dummydata } =
+  const { wishlistItems, setWishlistItems,searchTerm, setDummyData, dummydata } =
     useContext(Mycontext);
-
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [maxPrice, setMaxPrice] = useState(1000);
   const [categories, setCategories] = useState([]);
   const brands = ["WoodCraft", "FurniHouse", "HomeLux", "ComfortLine"];
   const [loading, setLoading] = useState(false);
+
+  
 
   // Fetch products
   const fetchDummyData = async () => {
@@ -76,6 +78,18 @@ export default function Page() {
     return matchesSearch && matchesCategory && matchesBrand && matchesPrice;
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(allProductData.length / itemsPerPage);
+  const currentItems = allProductData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategory, selectedBrand, maxPrice]);
+
   return (
     <>
       <Head />
@@ -83,13 +97,7 @@ export default function Page() {
       <div className="flex flex-col md:flex-row p-5 items-start justify-between">
         {/* Sidebar */}
         <aside className="w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search products..."
-            className="w-full p-2 border rounded"
-          />
+   
           <div>
             <h2 className="font-bold mb-2">Category</h2>
             {categories.map((cat) => (
@@ -152,8 +160,8 @@ export default function Page() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
               <p className="text-gray-600">Loading products...</p>
             </div>
-          ) : allProductData.length ? (
-            allProductData.map((product, index) => (
+          ) : currentItems.length ? (
+            currentItems.map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -224,6 +232,33 @@ export default function Page() {
           )}
         </main>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center my-8">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-blue-600 text-white rounded-l-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          >
+            Previous
+          </button>
+          
+          <div className="mx-4 flex items-center">
+            <span className="text-gray-700 font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+          </div>
+          
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </>
   );
 }
