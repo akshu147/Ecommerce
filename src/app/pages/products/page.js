@@ -167,7 +167,7 @@ export default function Page() {
         </aside>
 
         {/* Products Grid */}
-        <main className="product-ui w-full md:w-4/5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-4 overflow-y-auto">
+        <main className="product-ui w-full md:w-4/5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:p-4 overflow-y-auto border-[5px]">
           {loading ? (
             <div className="col-span-full text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -180,7 +180,7 @@ export default function Page() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden group"
+                className="bg-[#ffffff3c] rounded-xl shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden group"
               >
                 <div className="relative">
                   <Link

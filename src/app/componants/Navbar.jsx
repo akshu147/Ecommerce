@@ -1,6 +1,7 @@
 'use client'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { IoMdCart } from 'react-icons/io'
+import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
 import { X, Minus, Plus, Trash2 } from 'lucide-react'
 import { Mycontext } from '../context/Authcontext'
@@ -12,6 +13,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { MdOutlineMenu } from 'react-icons/md'
 import { debounce } from '../../utils/debounce'
+import { LuHeartHandshake } from "react-icons/lu";
 
 const Navbar = () => {
   const [showCart, setShowCart] = useState(false)
@@ -35,7 +37,7 @@ const Navbar = () => {
     { name: 'Home', link: '/' },
     { name: 'About', link: '/pages/about' },
     { name: 'Contact', link: '/pages/contect' },
-    { name: 'Products', link: '/pages/products' },
+{ name: 'Products', link: 'pages/products' },
     { name: 'Support', link: '#' },
     { name: 'Document', link: '#' }
   ]
@@ -191,7 +193,7 @@ const Navbar = () => {
   return (
     <>
       {/* Navbar */}
-      <section className='flex justify-between items-center px-5 py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
+      <section className='flex justify-between items-center px-5 py-2 md:py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
         <div className='text-2xl font-bold cursor-pointer hidden md:block'>
           <Link href={'/'}>STARK</Link>
         </div>
@@ -302,19 +304,36 @@ const Navbar = () => {
           </button>
           <button
             onClick={() => setShowWishlist(true)}
-            className='p-1 px-3 border border-black rounded hover:bg-black hover:text-white transition'
+            className='p-1 px-3 border hidden md:block border-black rounded hover:bg-black hover:text-white transition'
           >
             Wishlist
           </button>
+
+          <i className='block md:hidden text-[20px]'><LuHeartHandshake /></i>
 
           <div
             className='relative cursor-pointer'
             onClick={() => setShowCart(true)}
           >
-            <IoMdCart className='text-[28px]' />
+            <IoMdCart className='text-[20px] md:text-[26px]' />
             <p className='absolute top-0 left-full transform -translate-y-1/2 -translate-x-1/2 text-black text-[13px] font-bold'>
               {cartItems?.length || 0}
             </p>
+          </div>
+
+          <div className='relative cursor-pointer group'>
+            <FaUserCircle className='text-[20px] md:text-[20px]' />
+            <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200'>
+              <Link href='/profile' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+                Profile
+              </Link>
+              <Link href='/settings' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+                Settings
+              </Link>
+              <Link href='/logout' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+                Logout
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -505,7 +524,7 @@ const Navbar = () => {
         <div className='relative flex'>
           <input
             type='text'
-            className='px-4 py-2 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400 w-full'
+            className='px-4 py-1 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400 w-full'
             onChange={updateplaceofsearchbar} // ✅ fixed
             placeholder=''
             value={query}
@@ -554,7 +573,7 @@ const Navbar = () => {
           </div>
           <div
             onClick={() => {setSearchTerm(query),setSuggestions([]),nav.push('/pages/products')}}
-            className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
+            className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-1 rounded-md cursor-pointer'
           >
             <FaSearch />
           </div>
