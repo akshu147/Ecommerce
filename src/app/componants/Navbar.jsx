@@ -13,16 +13,23 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { MdOutlineMenu } from 'react-icons/md'
 import { debounce } from '../../utils/debounce'
-import { LuHeartHandshake } from "react-icons/lu";
+import { LuHeartHandshake } from 'react-icons/lu'
 
 const Navbar = () => {
   const [showCart, setShowCart] = useState(false)
   const [showWishlist, setShowWishlist] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [cartItems, setCartItems] = useState([])
+  const [showmobilemenu, setshowmobilemenu] = useState("-100%")
   const [wishlistItem, setWishlistItem] = useState([])
-  const { wishlistItems, setWishlistItems, query, setQuery, searchTerm, setSearchTerm } =
-    useContext(Mycontext)
+  const {
+    wishlistItems,
+    setWishlistItems,
+    query,
+    setQuery,
+    searchTerm,
+    setSearchTerm
+  } = useContext(Mycontext)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([]) // for search functionality
   const [loadingSuggestions, setLoadingSuggestions] = useState(false) // loading state
@@ -37,7 +44,7 @@ const Navbar = () => {
     { name: 'Home', link: '/' },
     { name: 'About', link: '/pages/about' },
     { name: 'Contact', link: '/pages/contect' },
-{ name: 'Products', link: 'pages/products' },
+    { name: 'Products', link: '/pages/products' },
     { name: 'Support', link: '#' },
     { name: 'Document', link: '#' }
   ]
@@ -81,12 +88,14 @@ const Navbar = () => {
 
   const updateplaceofsearchbar = e => {
     try {
-      if(!e.target.value) {setSearchTerm("")}
+      if (!e.target.value) {
+        setSearchTerm('')
+      }
       const value = e.target.value
       const names = ['Banana', 'Apple', 'Shirt', 'Pant']
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
       setQuery(e.target.value)
-       // for searh queary
+      // for searh queary
     } catch (err) {
       alert(err.message)
     }
@@ -111,7 +120,7 @@ const Navbar = () => {
 
     const debouncedFetchSuggestions = debounce(fetchSuggestions, 300)
     debouncedFetchSuggestions()
-    
+
     return () => {
       debouncedFetchSuggestions.cancel?.()
     }
@@ -189,7 +198,6 @@ const Navbar = () => {
     }
   ]
 
-
   return (
     <>
       {/* Navbar */}
@@ -198,8 +206,33 @@ const Navbar = () => {
           <Link href={'/'}>STARK</Link>
         </div>
         <i>
-          <MdOutlineMenu className='md:hidden text-3xl cursor-pointer' />
+          <MdOutlineMenu onClick={()=> {setshowmobilemenu("0"), console.log(";laskdfjlasdkjfaslkdfj")}} className='md:hidden text-3xl cursor-pointer' />
         </i>
+
+      <div
+  style={{ left: showmobilemenu }}
+  className={`fixed top-0 bg-[black] transition-all duration-1000 ease-in-out text-[white] h-[100vh] w-[90vw] z-50 overflow-y-scroll`}
+>
+  <header className="flex justify-between p-5 border-b">
+    <div>icon</div>
+    <div onClick={() => setshowmobilemenu("-100%")}>X</div>
+  </header>
+
+  <ul className="p-4">
+    {navitems.map((item, i) => (
+      <li
+        key={i}
+        className="px-4 py-2 bg-[#ffffff41] cursor-pointer space-y-1 my-1 rounded-md"
+        onClick={() => {
+          nav.push(item.link);
+        }}
+      >
+        {item.name}
+      </li>
+    ))}
+  </ul>
+</div>
+
 
         {/* Mobile Menu */}
         {/* <div className='w-full bg-black text-white over h-[100vh] overflow-y-scroll fixed top-0 left-0 p-5 z-60'>
@@ -262,10 +295,10 @@ const Navbar = () => {
                     key={i}
                     className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
                     onClick={() => {
-                      setQuery(item.name);
-                      setSuggestions([]);
-                      setSearchTerm(item.name);
-                      nav.push('/pages/products');
+                      setQuery(item.name)
+                      setSuggestions([])
+                      setSearchTerm(item.name)
+                      nav.push('/pages/products')
                     }}
                   >
                     {item.name}
@@ -290,7 +323,11 @@ const Navbar = () => {
               </AnimatePresence>
             </div>
             <div
-              onClick={() => {setSearchTerm(query),setSuggestions([]),nav.push('/pages/products')}}
+              onClick={() => {
+                setSearchTerm(query),
+                  setSuggestions([]),
+                  nav.push('/pages/products')
+              }}
               className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
             >
               <FaSearch />
@@ -309,7 +346,12 @@ const Navbar = () => {
             Wishlist
           </button>
 
-          <i className='block md:hidden text-[20px]'><LuHeartHandshake /></i>
+          <i
+            className='block md:hidden text-[20px]'
+            onClick={() => setShowWishlist(true)}
+          >
+            <LuHeartHandshake />
+          </i>
 
           <div
             className='relative cursor-pointer'
@@ -324,13 +366,22 @@ const Navbar = () => {
           <div className='relative cursor-pointer group'>
             <FaUserCircle className='text-[20px] md:text-[20px]' />
             <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200'>
-              <Link href='/profile' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+              <Link
+                href='/profile'
+                className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
+              >
                 Profile
               </Link>
-              <Link href='/settings' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+              <Link
+                href='/settings'
+                className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
+              >
                 Settings
               </Link>
-              <Link href='/logout' className='block px-4 py-2 text-gray-800 hover:bg-gray-100'>
+              <Link
+                href='/logout'
+                className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
+              >
                 Logout
               </Link>
             </div>
@@ -544,10 +595,10 @@ const Navbar = () => {
                   key={i}
                   className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
                   onClick={() => {
-                    setQuery(item.name);
-                    setSuggestions([]);
-                    setSearchTerm(item.name);
-                    nav.push('/pages/products');
+                    setQuery(item.name)
+                    setSuggestions([])
+                    setSearchTerm(item.name)
+                    nav.push('/pages/products')
                   }}
                 >
                   {item.name}
@@ -572,7 +623,11 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
           <div
-            onClick={() => {setSearchTerm(query),setSuggestions([]),nav.push('/pages/products')}}
+            onClick={() => {
+              setSearchTerm(query),
+                setSuggestions([]),
+                nav.push('/pages/products')
+            }}
             className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-1 rounded-md cursor-pointer'
           >
             <FaSearch />
