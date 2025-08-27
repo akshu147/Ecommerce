@@ -15,16 +15,15 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // Number of products per page
   const nav = useRouter();
-  const { wishlistItems, setWishlistItems,searchTerm, setDummyData, dummydata } =
+  const { wishlistItems, setWishlistItems, searchTerm, setDummyData, dummydata } =
     useContext(Mycontext);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
-  const [maxPrice, setMaxPrice] = useState(1000);
   const [categories, setCategories] = useState([]);
   const brands = ["WoodCraft", "FurniHouse", "HomeLux", "ComfortLine"];
   const [loading, setLoading] = useState(false);
-
-  
+  const [showFilters, setShowFilters] = useState(false);
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
 
   // Fetch products
   const fetchDummyData = async () => {
@@ -94,9 +93,21 @@ export default function Page() {
     <>
       <Head />
       <Navbar />
+      
+      {/* Mobile Filter Toggle Button */}
+      <div className="md:hidden p-4">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-semibold flex items-center justify-center"
+        >
+          {showFilters ? 'Hide Filters' : 'Show Filters'}
+          <span className="ml-2">{showFilters ? '▲' : '▼'}</span>
+        </button>
+      </div>
+
       <div className="flex flex-col md:flex-row p-5 items-start justify-between ">
         {/* Sidebar */}
-        <aside className="w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6 border-[4px] border-red-500 hidden md:block">
+        <aside className={`w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6 border-[4px] border-red-500 ${showFilters ? 'block' : 'hidden md:block'}`}>
    
           <div>
             <h2 className="font-bold mb-2">Category</h2>
@@ -151,6 +162,8 @@ export default function Page() {
               className="w-full"
             />
           </div>
+
+          {/* Remove Sorting Functionality */}
         </aside>
 
         {/* Products Grid */}
