@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "../../../componants/Navbar";
 import RelatedProducts from "../../../components/RelatedProducts";
 
+
 export default function Page() {
   const searchParams = useSearchParams();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -39,7 +40,7 @@ export default function Page() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 max-w-6xl mx-auto">
         {/* Left: Product Images */}
         <div>
-          <Image
+              <Image
             src={product.images[selectedImage]}
             alt={product.name}
             width={500}
@@ -47,6 +48,15 @@ export default function Page() {
             unoptimized
             className="rounded-2xl shadow-lg w-full h-[400px] object-contain border"
           />
+
+        
+
+
+
+
+
+
+
           <div className="flex gap-3 mt-4">
             {product.images.map((img, index) => (
               <Image

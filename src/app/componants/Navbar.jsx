@@ -20,7 +20,7 @@ const Navbar = () => {
   const [showWishlist, setShowWishlist] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [cartItems, setCartItems] = useState([])
-  const [showmobilemenu, setshowmobilemenu] = useState("-100%")
+  const [showmobilemenu, setshowmobilemenu] = useState('-100%')
   const [wishlistItem, setWishlistItem] = useState([])
   const {
     wishlistItems,
@@ -28,18 +28,15 @@ const Navbar = () => {
     query,
     setQuery,
     searchTerm,
-    setSearchTerm
+    setSearchTerm,
+    setsearchholdername,
+    searchholdernames
   } = useContext(Mycontext)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([]) // for search functionality
   const [loadingSuggestions, setLoadingSuggestions] = useState(false) // loading state
   const nav = useRouter()
-  const [searchholdernames, setsearchholdername] = useState([
-    'Banana',
-    'Apple',
-    'Shirt',
-    'Pant'
-  ])
+
   const navitems = [
     { name: 'Home', link: '/' },
     { name: 'About', link: '/pages/about' },
@@ -54,17 +51,18 @@ const Navbar = () => {
   }, [])
 
   useEffect(() => {
-    // const storedCart = localStorage.getItem('cartItems')
     const storedWishlist = localStorage.getItem('wishlist')
-
-    // if (storedCart) {
-    //   setCartItems(JSON.parse(storedCart))
-    // }
-
     if (storedWishlist) {
       setWishlistItem(JSON.parse(storedWishlist))
     }
   }, [wishlistItems])
+
+  useEffect(() => {
+    const storedWishlist = localStorage.getItem('wishlist')
+    if (storedWishlist) {
+      setWishlistItem(JSON.parse(storedWishlist))
+    }
+  }, [])
 
   // save after every chage
 
@@ -82,7 +80,7 @@ const Navbar = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex(prev => (prev + 1) % searchholdernames.length)
-    }, 2000) // change every 2 sec
+    }, 1000) // change every 2 sec
     return () => clearInterval(interval)
   }, [])
 
@@ -90,6 +88,7 @@ const Navbar = () => {
     try {
       if (!e.target.value) {
         setSearchTerm('')
+        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant'])
       }
       const value = e.target.value
       const names = ['Banana', 'Apple', 'Shirt', 'Pant']
@@ -203,36 +202,43 @@ const Navbar = () => {
       {/* Navbar */}
       <section className='flex justify-between items-center px-5 py-2 md:py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
         <div className='text-2xl font-bold cursor-pointer hidden md:block'>
-          <Link href={'/'}>STARK</Link>
+          <Link href={'/'}>FURNISTAR</Link>
         </div>
         <i>
-          <MdOutlineMenu onClick={()=> {setshowmobilemenu("0"), console.log(";laskdfjlasdkjfaslkdfj")}} className='md:hidden text-3xl cursor-pointer' />
+          <MdOutlineMenu
+            onClick={() => {
+              setshowmobilemenu('0'), console.log(';laskdfjlasdkjfaslkdfj')
+            }}
+            className='md:hidden text-3xl cursor-pointer'
+          />
         </i>
 
-      <div
-  style={{ left: showmobilemenu }}
-  className={`fixed top-0 bg-[black] transition-all duration-1000 ease-in-out text-[white] h-[100vh] w-[90vw] z-50 overflow-y-scroll`}
->
-  <header className="flex justify-between p-5 border-b">
-    <div>icon</div>
-    <div onClick={() => setshowmobilemenu("-100%")}>X</div>
-  </header>
+        <div
+          style={{ left: showmobilemenu }}
+          onTouchMove={() => {
+            setshowmobilemenu('-100%')
+          }}
+          className={`fixed top-0 bg-[black] transition-all duration-1000 ease-in-out text-[white] h-[100vh] w-[90vw] z-50 overflow-y-scroll`}
+        >
+          <header className='flex justify-between p-5 border-b'>
+            <div>icon</div>
+            <div onClick={() => setshowmobilemenu('-100%')}>X</div>
+          </header>
 
-  <ul className="p-4">
-    {navitems.map((item, i) => (
-      <li
-        key={i}
-        className="px-4 py-2 bg-[#ffffff41] cursor-pointer space-y-1 my-1 rounded-md"
-        onClick={() => {
-          nav.push(item.link);
-        }}
-      >
-        {item.name}
-      </li>
-    ))}
-  </ul>
-</div>
-
+          <ul className='p-4'>
+            {navitems.map((item, i) => (
+              <li
+                key={i}
+                className='px-4 py-2 bg-[#ffffff41] cursor-pointer space-y-1 my-1 rounded-md'
+                onClick={() => {
+                  nav.push(item.link)
+                }}
+              >
+                {item.name}
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* Mobile Menu */}
         {/* <div className='w-full bg-black text-white over h-[100vh] overflow-y-scroll fixed top-0 left-0 p-5 z-60'>
@@ -271,69 +277,71 @@ const Navbar = () => {
           </ul>
         </nav>
 
-        <form className='justify-center hidden md:block'>
-          <div className='relative w-96 flex'>
-            <input
-              type='text'
-              className='w-full px-4 py-2 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400'
-              onChange={updateplaceofsearchbar} // ✅ fixed
-              placeholder=''
-              value={query}
-            />
-            {loadingSuggestions && (
-              <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
-                <div className='px-4 py-2 text-center text-gray-500'>
-                  <div className='inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2'></div>
-                  Loading suggestions...
+          <form className='justify-center hidden md:block'>
+            <div className='relative w-96 flex'>
+              <input
+                type='text'
+                className={`w-full border px-4 py-2 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                onChange={updateplaceofsearchbar} // ✅ fixed
+                placeholder=''
+                value={query}
+              />
+              {loadingSuggestions && (
+                <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+                  <div className='px-4 py-2 text-center text-gray-500'>
+                    <div className='inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2'></div>
+                    Loading suggestions...
+                  </div>
                 </div>
-              </div>
-            )}
-            {!loadingSuggestions && suggestions.length > 0 && (
-              <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
-                {suggestions.map((item, i) => (
-                  <li
-                    key={i}
-                    className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
-                    onClick={() => {
-                      setQuery(item.name)
-                      setSuggestions([])
-                      setSearchTerm(item.name)
-                      nav.push('/pages/products')
-                    }}
-                  >
-                    {item.name}
-                  </li>
-                ))}
-              </ul>
-            )}
+              )}
+              {!loadingSuggestions && suggestions.length > 0 && (
+                <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+                  {suggestions.map((item, i) => (
+                    <li
+                      key={i}
+                      className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
+                      onClick={() => {
+                        setQuery(item.name)
+                        setSuggestions([])
+                        setSearchTerm(item.name)
+                        nav.push('/pages/products')
+                      }}
+                    >
+                      {item.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-            {/* Animated placeholder overlay */}
-            <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
-              <AnimatePresence mode='wait'>
-                <motion.span
-                  key={searchholdernames[index]}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -20, opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className='absolute'
-                >
-                  {searchholdernames[index]}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-            <div
-              onClick={() => {
-                setSearchTerm(query),
-                  setSuggestions([]),
+              {/* Animated placeholder overlay */}
+              <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
+                <AnimatePresence mode='wait'>
+                  <motion.span
+                    key={searchholdernames[index]}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -20, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className='absolute'
+                  >
+                    {searchholdernames[index]}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
+              <div
+                onClick={() => {
+                  if (!query) return alert('Please enter something to search')
+                  setSearchTerm(query),
+                    setSuggestions([]),
+                    setsearchholdername([])
                   nav.push('/pages/products')
-              }}
-              className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
-            >
-              <FaSearch />
+                }}
+                className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
+              >
+                <FaSearch />
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
 
         <div className='flex items-center gap-2'>
           <button className='p-1 px-3 bg-black text-white rounded hidden sm:block'>
@@ -572,14 +580,15 @@ const Navbar = () => {
         </div>
       </div>
       <form className=' w-full block md:hidden px-4'>
-        <div className='relative flex'>
+        <div className='relative flex '>
           <input
             type='text'
-            className='px-4 py-1 border rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400 w-full'
-            onChange={updateplaceofsearchbar} // ✅ fixed
-            placeholder=''
+            className='px-4 py-1 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400 w-full'
+            onChange={updateplaceofsearchbar}
+            placeholder='Type something...'
             value={query}
           />
+
           {loadingSuggestions && (
             <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
               <div className='px-4 py-2 text-center text-gray-500'>
@@ -624,9 +633,10 @@ const Navbar = () => {
           </div>
           <div
             onClick={() => {
-              setSearchTerm(query),
-                setSuggestions([]),
-                nav.push('/pages/products')
+              if (!query) return alert('Please enter something to search')
+              setSearchTerm(query), setSuggestions([]), setsearchholdername([])
+
+              nav.push('/pages/products')
             }}
             className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-1 rounded-md cursor-pointer'
           >
