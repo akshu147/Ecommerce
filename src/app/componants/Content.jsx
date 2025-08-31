@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -18,13 +18,18 @@ import {
   FiChevronRight
 } from 'react-icons/fi'
 import Image from 'next/image'
+import { Mycontext } from '../context/Authcontext'
 export default function HomePage () {
+  const {dummydata} = useContext(Mycontext)
+  console.log(dummydata, "halo")
   // --- AOS ---
   useEffect(() => {
     AOS.init({ duration: 800, once: false, offset: 40, easing: 'ease-out' })
   }, [])
 
   // --- Sample Data (replace with API later) ---
+
+
   const categories = useMemo(
     () => [
       {
@@ -227,7 +232,7 @@ export default function HomePage () {
       </section>
 
       {/* ========================== Categories ========================== */}
-      <section className='container mx-auto px-4 py-12'>
+      <section className='container mx-auto px-4 py-12 border-[6px]'>
         <div className='flex items-end justify-between mb-6'>
           <h2 className='text-2xl md:text-3xl font-bold'>Shop by Category</h2>
           <a
@@ -511,7 +516,7 @@ function Footer () {
   <div className='container mx-auto px-4 py-14 grid md:grid-cols-4 gap-10'>
     {/* Brand Info */}
     <div>
-      <h3 className='text-2xl font-extrabold'>FURNISTAR</h3>
+      <h3 className='text-2xl font-extrabold'>FURNSTACK</h3>
       <p className='text-white/80 mt-3'>
         Premium-quality furniture for your home & office. Free shipping on orders over $199.
       </p>

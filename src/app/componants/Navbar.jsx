@@ -88,8 +88,8 @@ const Navbar = () => {
     try {
       if (!e.target.value) {
         setSearchTerm('')
-        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant'])
       }
+      if(!e.target.value) { setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant'])}
       const value = e.target.value
       const names = ['Banana', 'Apple', 'Shirt', 'Pant']
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
@@ -202,12 +202,12 @@ const Navbar = () => {
       {/* Navbar */}
       <section className='flex justify-between items-center px-5 py-2 md:py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
         <div className='text-2xl font-bold cursor-pointer hidden md:block'>
-          <Link href={'/'}>FURNISTAR</Link>
+          <Link href={'/'}>FURNSTACK</Link>
         </div>
         <i>
           <MdOutlineMenu
             onClick={() => {
-              setshowmobilemenu('0'), console.log(';laskdfjlasdkjfaslkdfj')
+              setshowmobilemenu('0')
             }}
             className='md:hidden text-3xl cursor-pointer'
           />
@@ -344,8 +344,8 @@ const Navbar = () => {
           </form>
 
         <div className='flex items-center gap-2'>
-          <button className='p-1 px-3 bg-black text-white rounded hidden sm:block'>
-            Open Store Free
+          <button className='p-1 px-3 bg-black text-white rounded hidden sm:block relative'>
+            Open Store Free <span style={{top:"-30%"}} className='font-bold rounded-[10px] px-1 text-[10px] absolute right-0 bg-[#ff0000b9]'>Soon</span>
           </button>
           <button
             onClick={() => setShowWishlist(true)}
