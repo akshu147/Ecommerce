@@ -68,7 +68,8 @@ export default function Page () {
   const addToWishlist = product => {
     if (wishlistItems.some(item => item.id === product.id))
       return alert('Already in wishlist')
-    const updated = [...wishlistItems, product]
+    const productWithPath = { ...product, imagepath: serverfilepath }
+    const updated = [...wishlistItems, productWithPath]
     setWishlistItems(updated)
     localStorage.setItem('wishlist', JSON.stringify(updated))
   }

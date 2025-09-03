@@ -1,14 +1,16 @@
 "use client";
-import { Star } from "lucide-react";
-import { useState } from "react";
+import { Star, Heart } from "lucide-react";
+import { useState, useContext } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import Navbar from "../../../componants/Navbar";
 import RelatedProducts from "../../../components/RelatedProducts";
+import { Mycontext } from "../../../context/Authcontext";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const [selectedImage, setSelectedImage] = useState(0);
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useContext(Mycontext);
 
   // Get parameters from URL
   const id = searchParams.get("id");
@@ -31,6 +33,14 @@ export default function Page() {
     rating: 4.5,
     reviews: 1200,
     discount: 10,
+  };
+
+  const handleWishlistToggle = () => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
   };
 
   return (
@@ -115,11 +125,26 @@ export default function Page() {
 
           {/* Buttons */}
           <div className="flex gap-4 mt-6">
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-xl px-6 py-2 shadow">
+            <button className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-xl px-6 py-1 shadow">
               Add to Cart
             </button>
-            <button className="bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl px-6 py-2 shadow">
+            <button className="bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl px-6 py-1 shadow">
               Buy Now
+            </button>
+            <button
+              onClick={handleWishlistToggle}
+              className={`font-bold rounded-xl px-6 py-2 shadow flex items-center gap-2 ${
+                isInWishlist(product.id)
+                  ? "bg-red-500 hover:bg-red-600 text-white"
+                  : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+              }`}
+            >
+              <Heart
+                className={`w-5 h-5 ${
+                  isInWishlist(product.id) ? "fill-current" : ""
+                }`}
+              />
+              {isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
             </button>
           </div>
         </div>

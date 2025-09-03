@@ -74,7 +74,6 @@ const Navbar = () => {
     const updatedWishlist = wishlistItems.filter(item => item.id !== id)
     setWishlistItems(updatedWishlist)
     localStorage.setItem('wishlist', JSON.stringify(updatedWishlist))
-    console.log(id)
   }
 
   useEffect(() => {
@@ -89,7 +88,9 @@ const Navbar = () => {
       if (!e.target.value) {
         setSearchTerm('')
       }
-      if(!e.target.value) { setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant'])}
+      if (!e.target.value) {
+        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant'])
+      }
       const value = e.target.value
       const names = ['Banana', 'Apple', 'Shirt', 'Pant']
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
@@ -277,75 +278,81 @@ const Navbar = () => {
           </ul>
         </nav>
 
-          <form className='justify-center hidden md:block'>
-            <div className='relative w-96 flex'>
-              <input
-                type='text'
-                className={`w-full border px-4 py-2 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                onChange={updateplaceofsearchbar} // ✅ fixed
-                placeholder=''
-                value={query}
-              />
-              {loadingSuggestions && (
-                <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
-                  <div className='px-4 py-2 text-center text-gray-500'>
-                    <div className='inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2'></div>
-                    Loading suggestions...
-                  </div>
+        <form className='justify-center hidden md:block'>
+          <div className='relative w-96 flex'>
+            <input
+              type='text'
+              className={`w-full border px-4 py-2 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-400`}
+              onChange={updateplaceofsearchbar} // ✅ fixed
+              placeholder=''
+              value={query}
+            />
+            {loadingSuggestions && (
+              <div className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+                <div className='px-4 py-2 text-center text-gray-500'>
+                  <div className='inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2'></div>
+                  Loading suggestions...
                 </div>
-              )}
-              {!loadingSuggestions && suggestions.length > 0 && (
-                <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
-                  {suggestions.map((item, i) => (
-                    <li
-                      key={i}
-                      className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
-                      onClick={() => {
-                        setQuery(item.name)
-                        setSuggestions([])
-                        setSearchTerm(item.name)
-                        nav.push('/pages/products')
-                      }}
-                    >
-                      {item.name}
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              {/* Animated placeholder overlay */}
-              <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
-                <AnimatePresence mode='wait'>
-                  <motion.span
-                    key={searchholdernames[index]}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className='absolute'
+              </div>
+            )}
+            {!loadingSuggestions && suggestions.length > 0 && (
+              <ul className='absolute top-full left-0 right-0 mt-1 bg-white text-gray-800 shadow-lg border border-gray-200 z-50 rounded-md overflow-hidden'>
+                {suggestions.map((item, i) => (
+                  <li
+                    key={i}
+                    className='px-4 py-2 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors duration-200'
+                    onClick={() => {
+                      setQuery(item.name)
+                      setSuggestions([])
+                      setSearchTerm(item.name)
+                      nav.push('/pages/products')
+                    }}
                   >
-                    {searchholdernames[index]}
-                  </motion.span>
-                </AnimatePresence>
-              </div>
-              <div
-                onClick={() => {
-                  if (!query) return alert('Please enter something to search')
-                  setSearchTerm(query),
-                    setSuggestions([]),
-                    setsearchholdername([])
-                  nav.push('/pages/products')
-                }}
-                className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
-              >
-                <FaSearch />
-              </div>
+                    {item.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Animated placeholder overlay */}
+            <div className='absolute left-4 top-2 text-gray-500 pointer-events-none'>
+              <AnimatePresence mode='wait'>
+                <motion.span
+                  key={searchholdernames[index]}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className='absolute'
+                >
+                  {searchholdernames[index]}
+                </motion.span>
+              </AnimatePresence>
             </div>
-          </form>
+            <div
+              onClick={() => {
+                if (!query) return alert('Please enter something to search')
+                setSearchTerm(query),
+                  setSuggestions([]),
+                  setsearchholdername([])
+                nav.push('/pages/products')
+              }}
+              className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
+            >
+              <FaSearch />
+            </div>
+          </div>
+        </form>
 
         <div className='flex items-center gap-2'>
           <button className='p-1 px-3 bg-black text-white rounded hidden sm:block relative'>
-            Open Store Free <span style={{top:"-30%"}} className='font-bold rounded-[10px] px-1 text-[10px] absolute right-0 bg-[#ff0000b9]'>Soon</span>
+            Open Store Free{' '}
+            <span
+              style={{ top: '-30%' }}
+              className='font-bold rounded-[10px] px-1 text-[10px] absolute right-0 bg-[#ff0000b9]'
+            >
+              Soon
+            </span>
           </button>
           <button
             onClick={() => setShowWishlist(true)}
@@ -434,7 +441,9 @@ const Navbar = () => {
                   className='flex bg-white rounded-lg mb-4 p-4 relative shadow-sm border border-gray-100 hover:shadow-md transition-shadow'
                 >
                   <img
-                    src={item.img}
+                    src={`${item.imagepath ? item.imagepath + '/' : ''}${
+                      item.thumbnail || item.img
+                    }`}
                     alt={item.name}
                     className='w-20 h-20 object-cover rounded-lg'
                   />
@@ -527,13 +536,22 @@ const Navbar = () => {
             >
               <div className='flex items-center gap-4'>
                 <img
-                  src={item.thumbnail}
+                  src={`${item.imagepath ? item.imagepath + '/' : ''}${
+                    item.thumbnail
+                  }`}
                   alt={item.name}
                   className='w-16 h-16 rounded'
                 />
                 <div>
                   <h3 className='text-lg font-semibold'>{item.name}</h3>
-                  <p className='text-gray-600'>{item.price}</p>
+                  <p
+                    onClick={() => {
+                      item.thumbnail, 'i love you'
+                    }}
+                    className='text-gray-600'
+                  >
+                    {item.price}
+                  </p>
                 </div>
               </div>
               <button
@@ -569,7 +587,14 @@ const Navbar = () => {
                 {category.children.map((subcat, subidx) => (
                   <p
                     key={subidx}
-                    className='text-sm hover:bg-gray-700 px-2 py-1 rounded'
+                    onClick={() => {
+                      setQuery(subcat)
+                      setSearchTerm(subcat)
+                      setsearchholdername([])
+
+                      nav.push('/pages/products')
+                    }}
+                    className='text-sm hover:bg-gray-700 px-2 py-1 rounde'
                   >
                     {subcat}
                   </p>
