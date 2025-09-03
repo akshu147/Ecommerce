@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "../../../componants/Navbar";
 import RelatedProducts from "../../../components/RelatedProducts";
 
-
 export default function Page() {
   const searchParams = useSearchParams();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -18,6 +17,8 @@ export default function Page() {
   const image = searchParams.get("image");
   const brand = searchParams.get("brand");
   const description = searchParams.get("description");
+  const productImages = JSON.parse(searchParams.get("product_images") || "[]");
+  const serverfilepath = searchParams.get("serverfilepath");
 
   const product = {
     id,
@@ -25,13 +26,12 @@ export default function Page() {
     price: parseFloat(price) || 0,
     brand: brand || "Unknown Brand",
     description: description || "No description available",
-    images: [image || "/placeholder.jpg"],
+    images: productImages.length ? productImages : [image || "/placeholder.jpg"],
+    imagepath: serverfilepath,
     rating: 4.5,
     reviews: 1200,
     discount: 10,
   };
-
-  // Hardcoded related products removed - now using dynamic RelatedProducts component
 
   return (
     <>
@@ -40,8 +40,9 @@ export default function Page() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 max-w-6xl mx-auto">
         {/* Left: Product Images */}
         <div>
-              <Image
-            src={product.images[selectedImage]}
+          {/* Main Image */}
+          <Image
+            src={`${product.imagepath}/${product.images[selectedImage]}`}
             alt={product.name}
             width={500}
             height={400}
@@ -49,22 +50,15 @@ export default function Page() {
             className="rounded-2xl shadow-lg w-full h-[400px] object-contain border"
           />
 
-        
-
-
-
-
-
-
-
+          {/* Thumbnails */}
           <div className="flex gap-3 mt-4">
             {product.images.map((img, index) => (
               <Image
                 key={index}
                 height={80}
                 width={80}
-                src={img}
-                alt="thumbnail"
+                src={`${product.imagepath}/${img}`}
+                alt={`Thumbnail ${index}`}
                 unoptimized
                 className={`object-contain rounded-lg cursor-pointer border ${
                   selectedImage === index
@@ -91,9 +85,7 @@ export default function Page() {
                 }`}
               />
             ))}
-            <span className="text-gray-600">
-              ({product.reviews} reviews)
-            </span>
+            <span className="text-gray-600">({product.reviews} reviews)</span>
           </div>
 
           {/* Price */}
@@ -107,21 +99,6 @@ export default function Page() {
             <span className="ml-2 text-green-600 font-semibold">
               {product.discount}% off
             </span>
-          </div>
-
-          {/* EMI / Card Offers */}
-          <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-            <p className="text-gray-800 font-medium">
-              EMI starts from ₹{Math.round(product.price / 12)}/month
-            </p>
-            <p className="text-sm text-blue-600 cursor-pointer">
-              View Plans & Offers
-            </p>
-            <ul className="list-disc ml-6 text-gray-700 text-sm">
-              <li>10% Instant Discount on HDFC Credit Cards</li>
-              <li>No Cost EMI Available</li>
-              <li>Extra 5% off with Amazon Pay ICICI card</li>
-            </ul>
           </div>
 
           {/* Brand */}
@@ -144,14 +121,6 @@ export default function Page() {
             <button className="bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl px-6 py-2 shadow">
               Buy Now
             </button>
-          </div>
-
-          {/* Delivery Info */}
-          <div className="mt-6 text-gray-700 space-y-1">
-            <p>✅ Free delivery by <span className="font-medium">Tomorrow</span></p>
-            <p>🚚 Cash on Delivery available</p>
-            <p>🔄 7-Day Replacement Policy</p>
-            <p>🏬 Sold by <span className="font-medium">Apple Retailer Pvt Ltd</span></p>
           </div>
         </div>
       </div>
