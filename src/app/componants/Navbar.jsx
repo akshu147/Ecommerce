@@ -202,7 +202,7 @@ const Navbar = () => {
     <>
       {/* Navbar */}
       <section className='flex justify-between items-center px-5 py-2 md:py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
-        <div className='text-2xl font-bold cursor-pointer hidden md:block'>
+        <div className=' text-2xl font-bold cursor-pointer hidden md:block'>
           <Link href={'/'}>FURNSTACK</Link>
         </div>
         <i>

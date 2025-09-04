@@ -20,15 +20,14 @@ import {
 import Image from 'next/image'
 import { Mycontext } from '../context/Authcontext'
 export default function HomePage () {
-  const {dummydata} = useContext(Mycontext)
-  console.log(dummydata, "halo")
+  const { dummydata } = useContext(Mycontext)
+  console.log(dummydata, 'halo')
   // --- AOS ---
   useEffect(() => {
     AOS.init({ duration: 800, once: false, offset: 40, easing: 'ease-out' })
   }, [])
 
   // --- Sample Data (replace with API later) ---
-
 
   const categories = useMemo(
     () => [
@@ -190,8 +189,8 @@ export default function HomePage () {
                   ].map((src, i) => (
                     <SwiperSlide key={i}>
                       <Image
-                      width={200}
-                      height={200}
+                        width={200}
+                        height={200}
                         src={src}
                         alt={`hero-${i}`}
                         className='w-full h-full object-cover'
@@ -289,8 +288,8 @@ export default function HomePage () {
                   </span>
                 )}
                 <Image
-                width={100}
-                height={100}
+                  width={100}
+                  height={100}
                   src={p.img}
                   alt={p.title}
                   className='h-40 w-full object-cover'
@@ -512,83 +511,88 @@ function Feature ({ icon, title, subtitle }) {
 function Footer () {
   const year = new Date().getFullYear()
   return (
-  <footer className='bg-[#1e2224] text-white mt-12 rounded-[10px]'>
-  <div className='container mx-auto px-4 py-14 grid md:grid-cols-4 gap-10'>
-    {/* Brand Info */}
-    <div>
-      <h3 className='text-2xl font-extrabold'>FURNSTACK</h3>
-      <p className='text-white/80 mt-3'>
-        Premium-quality furniture for your home & office. Free shipping on orders over $199.
-      </p>
-    </div>
+    <footer className='bg-[#1e2224] text-white mt-12 rounded-[10px]'>
+      <div className='container mx-auto px-4 py-14 grid md:grid-cols-4 gap-10'>
+        {/* Brand Info */}
+        <div>
+          <h3
+            className="text-4xl font-extrabold bg-[url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] 
+             bg-clip-text text-transparent bg-cover bg-center"
+          >
+            FURNSTACK
+          </h3>
+          <p className='text-white/80 mt-3'>
+            Premium-quality furniture for your home & office. Free shipping on
+            orders over $199.
+          </p>
+        </div>
 
-    {/* Shop Categories */}
-    <div>
-      <p className='font-semibold mb-3'>Shop</p>
-      <ul className='space-y-2 text-white/80'>
-        <li>
-          <a href='#'>Living Room</a>
-        </li>
-        <li>
-          <a href='#'>Bedroom</a>
-        </li>
-        <li>
-          <a href='#'>Dining Room</a>
-        </li>
-        <li>
-          <a href='#'>Office Furniture</a>
-        </li>
-        <li>
-          <a href='#'>Outdoor & Garden</a>
-        </li>
-      </ul>
-    </div>
+        {/* Shop Categories */}
+        <div>
+          <p className='font-semibold mb-3'>Shop</p>
+          <ul className='space-y-2 text-white/80'>
+            <li>
+              <a href='#'>Living Room</a>
+            </li>
+            <li>
+              <a href='#'>Bedroom</a>
+            </li>
+            <li>
+              <a href='#'>Dining Room</a>
+            </li>
+            <li>
+              <a href='#'>Office Furniture</a>
+            </li>
+            <li>
+              <a href='#'>Outdoor & Garden</a>
+            </li>
+          </ul>
+        </div>
 
-    {/* Support */}
-    <div>
-      <p className='font-semibold mb-3'>Support</p>
-      <ul className='space-y-2 text-white/80'>
-        <li>
-          <a href='#'>Help Center</a>
-        </li>
-        <li>
-          <a href='#'>Shipping & Delivery</a>
-        </li>
-        <li>
-          <a href='#'>Returns & Exchanges</a>
-        </li>
-        <li>
-          <a href='#'>Warranty & Assembly</a>
-        </li>
-      </ul>
-    </div>
+        {/* Support */}
+        <div>
+          <p className='font-semibold mb-3'>Support</p>
+          <ul className='space-y-2 text-white/80'>
+            <li>
+              <a href='#'>Help Center</a>
+            </li>
+            <li>
+              <a href='#'>Shipping & Delivery</a>
+            </li>
+            <li>
+              <a href='#'>Returns & Exchanges</a>
+            </li>
+            <li>
+              <a href='#'>Warranty & Assembly</a>
+            </li>
+          </ul>
+        </div>
 
-    {/* Newsletter */}
-    <div>
-      <p className='font-semibold mb-3'>Newsletter</p>
-      <form className='flex gap-2'>
-        <input
-          className='w-full px-4 py-2 rounded-lg text-black'
-          placeholder='Your email'
-        />
-        <button className='px-4 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200'>
-          Subscribe
-        </button>
-      </form>
-      <p className='text-white/60 mt-2 text-sm'>
-        Get updates on new arrivals, exclusive offers, and furniture tips.
-      </p>
-    </div>
-  </div>
+        {/* Newsletter */}
+        <div>
+          <p className='font-semibold mb-3'>Newsletter</p>
+          <form className='flex gap-2'>
+            <input
+              className='w-full px-4 py-2 rounded-lg text-black'
+              placeholder='Your email'
+            />
+            <button className='px-4 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200'>
+              Subscribe
+            </button>
+          </form>
+          <p className='text-white/60 mt-2 text-sm'>
+            Get updates on new arrivals, exclusive offers, and furniture tips.
+          </p>
+        </div>
+      </div>
 
-  {/* Bottom Bar */}
-  <div className='border-t border-white/10'>
-    <div className='container mx-auto px-4 py-6 text-sm text-white/70 flex flex-col md:flex-row items-center justify-between gap-2'>
-      <p>© {new Date().getFullYear()} FURNISTAR. All rights reserved.</p>
-      <p>Privacy • Terms • Cookies</p>
-    </div>
-  </div>
-</footer>
-
+      {/* Bottom Bar */}
+      <div className='border-t border-white/10'>
+        <div className='container mx-auto px-4 py-6 text-sm text-white/70 flex flex-col md:flex-row items-center justify-between gap-2'>
+          <p>© {new Date().getFullYear()} FURNISTAR. All rights reserved.</p>
+          <p>Privacy • Terms • Cookies</p>
+        </div>
+      </div>
+    </footer>
   )
 }

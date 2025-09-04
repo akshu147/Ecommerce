@@ -113,14 +113,14 @@ const AuthPage = () => {
           <div className='flex gap-4 justify-center mb-4'>
             <button
               onClick={handleGoogleSignIn}
-              className='flex items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'
+              className='flex text-[12px] items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'
             >
               <FcGoogle />{' '}
               {ifsignup ? 'Sign Up with Google' : 'Login with Google'}
             </button>
             <button
               onClick={handleAppleSignIn}
-              className='flex items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'
+              className='flex text-[15px] items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'
             >
               <FaApple /> {ifsignup ? 'Sign Up with Apple' : 'Login with Apple'}
             </button>
