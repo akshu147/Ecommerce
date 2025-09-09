@@ -16,8 +16,6 @@ import { debounce } from '../../utils/debounce'
 import { LuHeartHandshake } from 'react-icons/lu'
 
 const Navbar = () => {
-  const [showCart, setShowCart] = useState(false)
-  const [showWishlist, setShowWishlist] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [showmobilemenu, setshowmobilemenu] = useState('-100%')
@@ -198,6 +196,11 @@ const Navbar = () => {
     }
   ]
 
+
+  const checkiflogin = ()=> {
+    nav.push("/pages/login")
+  }
+
   return (
     <>
       {/* Navbar */}
@@ -266,7 +269,7 @@ const Navbar = () => {
         <nav className='hidden lg:block'>
           <ul className='flex gap-6 text-sm font-medium'>
             {navitems.map((item, idx) => (
-              <li key={idx} data-aos='fade-up' data-aos-delay={idx * 100}>
+              <li key={idx} data-aos='fade-down' data-aos-delay={idx * 100}>
                 <Link
                   href={item.link}
                   className='px-2 py-1 block rounded hover:bg-gray-100'
@@ -355,7 +358,9 @@ const Navbar = () => {
             </span>
           </button>
           <button
-            onClick={() => setShowWishlist(true)}
+            onClick={() => {
+              nav.push("/pages/wishlist")
+            }}
             className='p-1 px-3 border hidden md:block border-black rounded hover:bg-black hover:text-white transition'
           >
             Wishlist
@@ -363,14 +368,13 @@ const Navbar = () => {
 
           <i
             className='block md:hidden text-[20px]'
-            onClick={() => setShowWishlist(true)}
+        
           >
             <LuHeartHandshake />
           </i>
 
           <div
             className='relative cursor-pointer'
-            onClick={() => setShowCart(true)}
           >
             <IoMdCart className='text-[20px] md:text-[26px]' />
             <p className='absolute top-0 left-full transform -translate-y-1/2 -translate-x-1/2 text-black text-[13px] font-bold'>
@@ -379,14 +383,14 @@ const Navbar = () => {
           </div>
 
           <div className='relative cursor-pointer group'>
-            <FaUserCircle className='text-[20px] md:text-[20px]' />
+            <FaUserCircle className='text-[20px] md:text-[20px]' onClick={checkiflogin}/>
             <div className='absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200'>
-              <Link
+              <div
                 href='/profile'
                 className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
               >
                 Profile
-              </Link>
+              </div>
               <Link
                 href='/settings'
                 className='block px-4 py-2 text-gray-800 hover:bg-gray-100'
@@ -404,177 +408,7 @@ const Navbar = () => {
         </div>
       </section>
 
-      {/* Cart Panel */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full sm:max-w-[420px] bg-gradient-to-br from-blue-50 via-white to-gray-100 p-6 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
-          showCart ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className='flex justify-between items-center p-5 border-b border-gray-200 bg-white rounded-t-lg'>
-          <h2 className='text-xl font-bold text-gray-800'>
-            Your Shopping Cart
-          </h2>
-          <button
-            onClick={() => setShowCart(false)}
-            className='p-2 hover:bg-gray-100 rounded-full transition-colors'
-          >
-            <X className='w-5 h-5 text-gray-600' />
-          </button>
-        </div>
-
-        <div className='cart-panel text-sm h-[calc(100vh-120px)] overflow-y-auto py-4'>
-          {cartItems.length === 0 ? (
-            <div className='text-center py-12'>
-              <div className='w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center'>
-                <IoMdCart className='w-8 h-8 text-gray-400' />
-              </div>
-              <p className='text-gray-500 font-medium'>Your cart is empty</p>
-              <p className='text-sm text-gray-400 mt-1'>
-                Start shopping to add items
-              </p>
-            </div>
-          ) : (
-            <>
-              {cartItems.map(item => (
-                <div
-                  key={item.id}
-                  className='flex bg-white rounded-lg mb-4 p-4 relative shadow-sm border border-gray-100 hover:shadow-md transition-shadow'
-                >
-                  <img
-                    src={`${item.imagepath ? item.imagepath + '/' : ''}${
-                      item.thumbnail || item.img
-                    }`}
-                    alt={item.name}
-                    className='w-20 h-20 object-cover rounded-lg'
-                  />
-                  <div className='ml-4 flex-1'>
-                    <h3 className='font-semibold text-gray-800 text-base'>
-                      {item.name}
-                    </h3>
-                    <p className='text-sm text-gray-500 mb-2'>
-                      Size: {item.size}
-                    </p>
-                    <p className='font-bold text-lg text-blue-600'>
-                      ${item.price.toFixed(2)}
-                    </p>
-                  </div>
-                  <div className='flex items-center gap-2 mt-2'>
-                    <button
-                      onClick={() => updateQty(item.id, 'dec')}
-                      className='w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors'
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className='font-medium text-gray-700 min-w-[20px] text-center'>
-                      {item.qty || 1}
-                    </span>
-                    <button
-                      onClick={() => updateQty(item.id, 'inc')}
-                      className='w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center transition-colors'
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    className='absolute top-3 right-3 p-1 hover:bg-red-50 rounded-full transition-colors'
-                  >
-                    <Trash2
-                      size={16}
-                      className='text-red-400 hover:text-red-600'
-                    />
-                  </button>
-                </div>
-              ))}
-
-              <div className='bg-white p-5 rounded-lg shadow-sm border border-gray-100 space-y-3'>
-                <div className='flex justify-between text-gray-600'>
-                  <span>Subtotal:</span>
-                  <span className='font-medium'>
-                    ${/* subTotal calculation */}
-                  </span>
-                </div>
-                <div className='flex justify-between text-gray-600'>
-                  <span>Discount:</span>
-                  <span className='text-green-600 font-medium'>
-                    -${/* discount calculation */}
-                  </span>
-                </div>
-                <div className='flex justify-between text-lg font-bold text-gray-800 pt-3 border-t border-gray-200'>
-                  <span>Total:</span>
-                  <span>${/* total calculation */}</span>
-                </div>
-                <button className='w-full mt-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-lg text-base font-semibold shadow-md hover:shadow-lg transition-all'>
-                  Proceed to Checkout
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Wishlist Panel */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full sm:max-w-[400px] 
-  bg-gradient-to-br from-purple-300 via-blue-200 to-gray-300 
-  p-6 rounded-2xl shadow-xl z-50 transform transition-transform 
-  duration-500 ease-in-out ${
-    showWishlist ? 'translate-x-0' : 'translate-x-full'
-  }`}
-      >
-        <div className='flex justify-between items-center p-4 border-b sticky top-0 bg-white z-60'>
-          <h2 className='text-lg font-semibold'>Wishlist</h2>
-          <button onClick={() => setShowWishlist(false)}>
-            <X className='w-6 h-6 text-gray-600' />
-          </button>
-        </div>
-        <div className='p-4 text-sm overflow-y-auto h-[calc(100vh-100px)]'>
-          {wishlistItem.map(item => (
-            <div
-              key={item.id}
-              className='flex items-center justify-between bg-white rounded-xl shadow px-[4] py-[2] relative mb-[3px]'
-            >
-              <div className='flex items-center gap-4'>
-                <img
-                  src={`${item.imagepath ? item.imagepath + '/' : ''}${
-                    item.thumbnail
-                  }`}
-                  alt={item.name}
-                  className='w-16 h-16 rounded'
-                />
-                <div>
-                  <h3 className='text-lg font-semibold'>{item.name}</h3>
-                  <p
-                    onClick={() => {
-                      item.thumbnail, 'i love you'
-                    }}
-                    className='text-gray-600'
-                  >
-                    {item.price}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => removeproductfromwishlist(item.id)}
-                className='bg-black text-white text-sm px-4 py-1 rounded-md'
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Backdrop */}
-      {(showCart || showWishlist) && (
-        <div
-          className='fixed inset-0 bg-black/40 z-40'
-          onClick={() => {
-            setShowCart(false)
-            setShowWishlist(false)
-          }}
-        />
-      )}
+  
       <div className='hidden lg:block'>
         <div className='flex justify-evenly bg-black text-white text-[14px] mx-[100px] rounded-bl-[20px] rounded-br-[20px]'>
           {furnitureCategories.map((category, idx) => (

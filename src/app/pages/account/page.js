@@ -9,6 +9,7 @@ import {
   X
 } from "lucide-react";
 import Navbar from "../../componants/Navbar";
+import Aside from "../../componants/Aside";
 
 export default function FavoritesPage() {
   const [favorites] = useState([
@@ -54,33 +55,7 @@ export default function FavoritesPage() {
 
       <section className="flex mt-3 gap-6 p-4">
         {/* Sidebar */}
-        <aside
-          className={`fixed rounded-2xl lg:static top-0 left-0 h-[100vh] w-64 bg-slate-100 shadow-md p- p-4 flex flex-col transform transition-transform duration-300 z-40 
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-full bg-pink-200" />
-            <div>
-              <p className="font-semibold">mr start</p>
-              <p className="text-sm text-gray-500">labina@email.com</p>
-              <button className="text-xs text-orange-500">Edit Profile</button>
-            </div>
-          </div>
-          <nav className="flex flex-col gap-4">
-            <button className="flex items-center gap-2 text-gray-700 hover:text-orange-500">
-              <User size={18} /> My Account
-            </button>
-            <button className="flex items-center gap-2 text-orange-500 font-semibold">
-              <Heart size={18} /> Favorites
-            </button>
-            <button className="flex items-center gap-2 text-gray-700 hover:text-orange-500">
-              <ShoppingCart size={18} /> Orders
-            </button>
-            <button className="flex items-center gap-2 text-gray-700 hover:text-orange-500">
-              <Bell size={18} /> Notifications
-            </button>
-          </nav>
-        </aside>
+      <Aside/>
 
         {/* Main Content */}
         <main className="rounded-2xl flex-1 p-4 lg:p-8 mt-16 lg:mt-0 bg-slate-100">
