@@ -52,7 +52,7 @@ const AuthPage = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/user/sign-up',
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/sign-up`,
         formdata
       )
       console.log(response)
@@ -65,12 +65,13 @@ const AuthPage = () => {
       alert(err.response?.data?.message || 'Something went wrong!')
     }
   }
+  console.log(process.env.NEXT_PUBLIC_SERVER_URL)
 
   const handleLogin = async e => {
     e.preventDefault()
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/user/login',
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/login`,
         {
           email: formdata.email,
           password: formdata.password
@@ -106,7 +107,7 @@ const AuthPage = () => {
 
       // 👉 3) Call backend
       const response = await axios.post(
-        'http://localhost:4000/api/user/get-otp',
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/get-otp`,
         { email: formdata.email }
       )
 

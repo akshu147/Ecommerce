@@ -5,17 +5,19 @@ import Navbar from '../../componants/Navbar';
 import Aside from '../../componants/Aside';
 
 const FavoritesPage = () => {
- const [favorites] = useState([
-  { id: 1, name: 'Meja Tamu / Samping Minimalist', price: 'Rp. 3.829.000', location: 'Kab. Sidoarjo', rating: 4, img: 'https://via.placeholder.com/150' },
-  { id: 2, name: 'Meja Tamu Minimalist', price: 'Rp. 48.500', location: 'Kab. Jakarta Selatan', rating: 3, img: 'https://via.placeholder.com/150' },
-  { id: 3, name: 'RISATOR Keranjang', price: 'Rp. 164.000', location: 'Kab. Sidoarjo', rating: 5, img: 'https://via.placeholder.com/150' }
-]);
+  const [favorites] = useState([
+    { id: 1, name: 'Meja Tamu / Samping Minimalist', price: 'Rp. 3.829.000', location: 'Kab. Sidoarjo', rating: 4, img: 'https://via.placeholder.com/150' },
+    { id: 2, name: 'Meja Tamu Minimalist', price: 'Rp. 48.500', location: 'Kab. Jakarta Selatan', rating: 3, img: 'https://via.placeholder.com/150' },
+    { id: 3, name: 'RISATOR Keranjang', price: 'Rp. 164.000', location: 'Kab. Sidoarjo', rating: 5, img: 'https://via.placeholder.com/150' }
+  ]);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-      <>
-      <Navbar/>
+    <>
+      <Navbar />
+
+      {/* Mobile Top Bar */}
       <div className='lg:hidden flex justify-between items-center p-4 shadow bg-white sticky top-0 z-50'>
         <h1 className='font-bold text-lg'>Favorites</h1>
         <button onClick={() => setSidebarOpen(!sidebarOpen)}>
@@ -25,8 +27,7 @@ const FavoritesPage = () => {
 
       <section className='flex mt-3 gap-6 p-4'>
         {/* Sidebar */}
-      \
-      <Aside/>
+        <Aside />
 
         {/* Main Content */}
         <main className='rounded-2xl flex-1 p-4 lg:p-8 bg-slate-100'>
@@ -45,7 +46,10 @@ const FavoritesPage = () => {
           {/* Product Grid */}
           <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2'>
             {favorites.map(item => (
-              <div key={item.id} className='bg-white rounded-xl shadow p-2 flex flex-col hover:shadow-lg transition'>
+              <div
+                key={item.id}
+                className='bg-white rounded-xl shadow p-2 flex flex-col hover:shadow-lg transition'
+              >
                 <img
                   src={item.img}
                   alt={item.name}
@@ -74,7 +78,7 @@ const FavoritesPage = () => {
           </div>
         </main>
       </section>
-      </>
+    </>
   );
 };
 
