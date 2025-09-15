@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation'
 import { MdOutlineMenu } from 'react-icons/md'
 import { debounce } from '../../utils/debounce'
 import { LuHeartHandshake } from 'react-icons/lu'
+import nookies from 'nookies'
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
@@ -108,7 +109,7 @@ const Navbar = () => {
 
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/user/search?name=${query}`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/search?name=${query}`
         )
         setSuggestions(res.data.results)
       } catch (err) {
@@ -196,11 +197,14 @@ const Navbar = () => {
     }
   ]
 
-
-  const checkiflogin = ()=> {
-    nav.push("/pages/login")
+  const checkiflogin = () => {
+    const user = nookies.get('refreshToken')
+    if (user && user.refreshToken) {
+      nav.push('/pages/account')
+    } else {
+      nav.push('/pages/login')
+    }
   }
-
   return (
     <>
       {/* Navbar */}
@@ -359,23 +363,18 @@ const Navbar = () => {
           </button>
           <button
             onClick={() => {
-              nav.push("/pages/wishlist")
+              nav.push('/pages/wishlist')
             }}
             className='p-1 px-3 border hidden md:block border-black rounded hover:bg-black hover:text-white transition'
           >
             Wishlist
           </button>
 
-          <i
-            className='block md:hidden text-[20px]'
-        
-          >
+          <i className='block md:hidden text-[20px]'>
             <LuHeartHandshake />
           </i>
 
-          <div
-            className='relative cursor-pointer'
-          >
+          <div className='relative cursor-pointer'>
             <IoMdCart className='text-[20px] md:text-[26px]' />
             <p className='absolute top-0 left-full transform -translate-y-1/2 -translate-x-1/2 text-black text-[13px] font-bold'>
               {cartItems?.length || 0}
@@ -383,13 +382,14 @@ const Navbar = () => {
           </div>
 
           <div className='relative cursor-pointer group'>
-            <FaUserCircle className='text-[20px] md:text-[20px]' onClick={checkiflogin}/>
-          
+            <FaUserCircle
+              className='text-[20px] md:text-[20px]'
+              onClick={checkiflogin}
+            />
           </div>
         </div>
       </section>
 
-  
       <div className='hidden lg:block'>
         <div className='flex justify-evenly bg-black text-white text-[14px] mx-[100px] rounded-bl-[20px] rounded-br-[20px]'>
           {furnitureCategories.map((category, idx) => (

@@ -37,7 +37,7 @@ const Page = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:4000/api/user/user-query',
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/user-query`,
         data
       )
       console.log(response)

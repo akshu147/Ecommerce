@@ -4,10 +4,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { FaApple, FaEye, FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
-import Cookies from 'js-cookie'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-
 
 const AuthPage = () => {
   const [ifsignup, setIfSignup] = useState(false)
@@ -53,15 +51,15 @@ const AuthPage = () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/sign-up`,
-        formdata
+        formdata, {withCredentials:true}
       )
       console.log(response)
 
-      if(response.status == 201) return nav.push("/")
+      if (response.status == 201) return nav.push('/pages/account')
       alert('Signup successful')
-      Cookies.set('_token', response.data.token, { expires: 7 })
       setIfSignup(true)
     } catch (err) {
+      console.log(err.message)
       alert(err.response?.data?.message || 'Something went wrong!')
     }
   }
@@ -77,6 +75,7 @@ const AuthPage = () => {
           password: formdata.password
         }
       )
+
       alert('Login successful')
     } catch (err) {
       alert(err.response?.data?.message || 'Something went wrong!')

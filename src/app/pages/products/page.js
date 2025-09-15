@@ -39,7 +39,7 @@ export default function Page () {
       //   "https://dummyjson.com/products?limit=100"
       // );
       const allProduct = await axios.get(
-        'http://localhost:4000/api/product/get-products'
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/product/get-products`
       )
 
       setDummyData(allProduct.data.allproducts)
