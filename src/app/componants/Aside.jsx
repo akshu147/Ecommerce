@@ -4,18 +4,17 @@ import { Heart, Bell, User, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import nookies from 'nookies'
 import axios from 'axios'
+import { Mycontext } from '../context/Authcontext'
 
 const Aside = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [userdata, setuserdata] = useState({})
+  // const {userdata, setuserdata} = Mycontext()
   const nav = useRouter()
 
   const getuserdata = async () => {
     try {
-      console.log('success')
       const token = nookies.get('accestoken')
-      console.log(token.accestoken, 'data')
-
       if (token) {
         const responce = await axios.get(
           `http://localhost:4000/api/user/fetch-token-data`,
@@ -32,7 +31,7 @@ const Aside = () => {
       if (err.response && err.response.status === 401) {
         alert('Unauthorized! Please login again.')
       } else {
-        alert('Something went wrong!')
+        alert(err.message, "eror delkle mbhai")
       }
     }
   }
@@ -40,7 +39,6 @@ const Aside = () => {
   useEffect(() => {
     getuserdata()
   }, [])
-  console.log(userdata)
 
   return (
     <aside
@@ -60,7 +58,7 @@ const Aside = () => {
           </div>
 
           <p className='text-sm text-gray-500'>{userdata.email || ''}</p>
-          {userdata ? (
+          {userdata && userdata.id ? (
             // Edit Profile button with tooltip
             <div className='relative group inline-block'>
               <button className='px-3 py-1 text-xs font-semibold text-orange-500 border border-orange-500 rounded-md hover:bg-orange-500 hover:text-white transition'>

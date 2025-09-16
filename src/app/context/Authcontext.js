@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, { createContext, useState, useContext } from 'react'
 
 // Main Context
@@ -7,9 +7,11 @@ export const Mycontext = createContext()
 const Authcontext = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState([])
   const [dummydata, setDummyData] = useState([])
+  // const [userdata, setuserdata] = useState({}) /// from aside componant to make globla user email which fechend form backend to
+
   const [query, setQuery] = useState('') // for search functionality
-    const [searchTerm, setSearchTerm] = useState("");
-      const [searchholdernames, setsearchholdername] = useState([
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchholdernames, setsearchholdername] = useState([
     'Banana',
     'Apple',
     'Shirt',
@@ -30,7 +32,7 @@ const Authcontext = ({ children }) => {
   }, [wishlistItems])
 
   // Add to wishlist
-  const addToWishlist = (product) => {
+  const addToWishlist = product => {
     if (!wishlistItems.some(item => item.id === product.id)) {
       const updated = [...wishlistItems, product]
       setWishlistItems(updated)
@@ -38,33 +40,35 @@ const Authcontext = ({ children }) => {
   }
 
   // Remove from wishlist
-  const removeFromWishlist = (productId) => {
+  const removeFromWishlist = productId => {
     const updated = wishlistItems.filter(item => item.id !== productId)
     setWishlistItems(updated)
   }
 
   // Check if item is in wishlist
-  const isInWishlist = (productId) => {
+  const isInWishlist = productId => {
     return wishlistItems.some(item => item.id === productId)
   }
 
   return (
-    <Mycontext.Provider value={{ 
-      wishlistItems, 
-      setWishlistItems, 
-      dummydata, 
-      setDummyData, 
-      query, 
-      setQuery,
-      addToWishlist,
-      removeFromWishlist,
-      isInWishlist,
-      searchTerm,
-      setSearchTerm,
-      setsearchholdername,
-      searchholdernames
-    }}>
-        {children}
+    <Mycontext.Provider
+      value={{
+        wishlistItems,
+        setWishlistItems,
+        dummydata,
+        setDummyData,
+        query,
+        setQuery,
+        addToWishlist,
+        removeFromWishlist,
+        isInWishlist,
+        searchTerm,
+        setSearchTerm,
+        setsearchholdername,
+        searchholdernames
+      }}
+    >
+      {children}
     </Mycontext.Provider>
   )
 }

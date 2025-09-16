@@ -2,8 +2,11 @@
 import { User, Heart, ShoppingBag, CreditCard, Bell, MapPin, LogOut, Settings } from "lucide-react";
 import Navbar from "../../componants/Navbar";
 import Aside from "../../componants/Aside";
+import { Mycontext } from "@/app/context/Authcontext";
+import { useContext } from "react";
 
 export default function AccountPage() {
+  // const {userdata} = useContext()
   const options = [
     { id: 1, label: "My Orders", icon: <ShoppingBag size={22} /> },
     { id: 2, label: "Favorites", icon: <Heart size={22} /> },
@@ -13,6 +16,8 @@ export default function AccountPage() {
     { id: 6, label: "Settings", icon: <Settings size={22} /> },
     { id: 7, label: "Logout", icon: <LogOut size={22} /> },
   ];
+  
+
 
   return (
     <>
@@ -31,7 +36,7 @@ export default function AccountPage() {
               <User size={32} className="text-gray-500" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">John Doe</h3>
+              {/* <h3 className="font-semibold text-lg">{userdata.email}</h3> */}
               <p className="text-sm text-gray-500">johndoe@email.com</p>
               <button className="text-orange-500 text-xs mt-1 hover:underline">
                 Edit Profile

@@ -6,6 +6,9 @@ import { FaApple, FaEye, FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Button from '../../componants/Button'
+import nookies from 'nookies'
+
 
 const AuthPage = () => {
   const [ifsignup, setIfSignup] = useState(false)
@@ -40,6 +43,17 @@ const AuthPage = () => {
     ? passwordRegex.test(formdata.password)
     : null
 
+const checkuseralradylogn = () => {
+  const cookies = nookies.get()
+  const user = cookies.accestoken   // 👈 ab sahi
+  if (user) {
+    nav.push("/")
+  }
+}
+useEffect(()=> {
+  checkuseralradylogn()
+}, [])
+
   const userRegister = async e => {
     e.preventDefault()
     if (!isEmailValid) return alert('Invalid email format')
@@ -63,7 +77,6 @@ const AuthPage = () => {
       alert(err.response?.data?.message || 'Something went wrong!')
     }
   }
-  console.log(process.env.NEXT_PUBLIC_SERVER_URL)
 
   const handleLogin = async e => {
     e.preventDefault()
@@ -244,12 +257,9 @@ const AuthPage = () => {
                 </p>
               )}
 
-              <button
-                type='submit'
-                className='mt-2 bg-purple-500 text-white rounded-lg py-2 hover:bg-purple-600'
-              >
+              <Button type='submit' className='mt-2'>
                 Login
-              </button>
+              </Button>
 
               <p className='text-sm text-center'>
                 New user?{' '}
