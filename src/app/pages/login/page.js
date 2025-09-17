@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Button from '../../componants/Button'
 import nookies from 'nookies'
+import Googleloginbtn from '../../componants/Googleloginbtn'
 
 
 const AuthPage = () => {
@@ -178,7 +179,6 @@ useEffect(()=> {
   const handleAppleSignIn = () => console.log('Apple Sign In clicked')
 
   if (!mounted) return null
-
   return (
     <div className='min-h-screen flex justify-center items-center bg-[#030712] p-4'>
       <div className='text-white shadow-[2px_3px_10px_white] sm:mx-[50px] md:mx-[100px] lg:mx-[200px] rounded-2xl w-full grid md:grid-cols-2 overflow-hidden'>
@@ -195,13 +195,7 @@ useEffect(()=> {
 
           {/* Social login buttons */}
           <div className='flex gap-4 justify-center mb-4'>
-            <button
-              onClick={handleGoogleSignIn}
-              className='flex text-[12px] items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'
-            >
-              <FcGoogle />{' '}
-              {ifsignup ? 'Sign Up with Google' : 'Login with Google'}
-            </button>
+         <Googleloginbtn/>
             <button
               onClick={handleAppleSignIn}
               className='flex text-[15px] items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'

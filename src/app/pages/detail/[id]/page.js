@@ -4,7 +4,7 @@ import { useState, useContext } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import Navbar from "../../../componants/Navbar";
-import RelatedProducts from "../../../components/RelatedProducts";
+import RelatedProducts from "../../../componants/RelatedProducts";
 import { Mycontext } from "../../../context/Authcontext";
 
 export default function Page() {

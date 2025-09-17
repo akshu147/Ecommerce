@@ -1,3 +1,1 @@
-- [x] Fix wishlist image display in Navbar.jsx by using full image path
-- [x] Update addToWishlist in products/page.js to include imagepath
-- [x] Test the wishlist image display
+- [ ] Add automatic token refresh every 15 minutes in Aside.jsx
