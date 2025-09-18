@@ -15,7 +15,10 @@ const Authcontext = ({ children }) => {
     'Banana',
     'Apple',
     'Shirt',
-    'Pant'
+    'Pant',
+    'poteto',
+    'tometo',
+    'toy'
   ])
 
   // Load wishlist from localStorage on mount

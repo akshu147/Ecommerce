@@ -88,10 +88,10 @@ const Navbar = () => {
         setSearchTerm('')
       }
       if (!e.target.value) {
-        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant'])
+        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant', "lawd"])
       }
       const value = e.target.value
-      const names = ['Banana', 'Apple', 'Shirt', 'Pant']
+      const names = ['Banana', 'Apple', 'Shirt', 'Pant', "lawda"]
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
       setQuery(e.target.value)
       // for searh queary

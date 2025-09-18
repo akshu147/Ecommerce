@@ -45,6 +45,7 @@ api.interceptors.response.use(
   const getuserdata = async () => {
     try {
       const token = nookies.get().accestoken
+      console.log(token, "form asid e page")
       if (!token) return setuserdata({})
 
       const response = await api.get('/user/fetch-token-data', {
@@ -57,7 +58,6 @@ api.interceptors.response.use(
       console.log('Fetch user error:', err)
     }
   }
-
   useEffect(() => {
     getuserdata()
   }, [])
