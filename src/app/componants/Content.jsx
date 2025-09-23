@@ -20,7 +20,8 @@ import {
 import Image from 'next/image'
 import { Mycontext } from '../context/Authcontext'
 export default function HomePage () {
-  const { dummydata } = useContext(Mycontext)
+  // const { dummydata } = useContext(Mycontext)
+  const dummydata = "" //for only stop error not twhor
   console.log(dummydata, 'halo')
   // --- AOS ---
   useEffect(() => {

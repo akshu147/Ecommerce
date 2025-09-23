@@ -4,8 +4,6 @@ import AOS from "aos"
 import "aos/dist/aos.css"
 import Image from "next/image";
 
-import Head from "../../componants/Head"
-import Navbar from "../../componants/Navbar"
 
 const Page = () => {
   useEffect(() => {
@@ -20,8 +18,7 @@ const Page = () => {
 
   return (
     <>
-      <Head/>
-      <Navbar/>
+    
 
       <div className="px-6 py-12 max-w-6xl mx-auto font-sans text-gray-800">
         {/* Hero / Header */}

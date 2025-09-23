@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoMdCart } from 'react-icons/io'
 import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
@@ -15,26 +15,37 @@ import { MdOutlineMenu } from 'react-icons/md'
 import { debounce } from '../../utils/debounce'
 import { LuHeartHandshake } from 'react-icons/lu'
 import nookies from 'nookies'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { setwishlist } from '../redux/wishlistslice/wishlistslice'
+import { setsearchitem } from '../redux/productsearchslice/productsearchslice'
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [showmobilemenu, setshowmobilemenu] = useState('-100%')
-  const [wishlistItem, setWishlistItem] = useState([])
-  const {
-    wishlistItems,
-    setWishlistItems,
-    query,
-    setQuery,
-    searchTerm,
-    setSearchTerm,
-    setsearchholdername,
-    searchholdernames
-  } = useContext(Mycontext)
+  const [query, setQuery] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [searchholdernames, setsearchholdername] = useState([
+    'apple',
+    'banana',
+    'cat',
+    'sot'
+  ])
+  const wishlistItems = ''
+  // const {
+  //   wishlistItems,
+  //   setWishlistItems,
+  //   query,
+  //   setQuery,
+  //   searchTerm,
+  //   setSearchTerm,
+  //   setsearchholdername,
+  //   searchholdernames
+  // } = useContext(Mycontext)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([]) // for search functionality
   const [loadingSuggestions, setLoadingSuggestions] = useState(false) // loading state
   const nav = useRouter()
+  const dispatch = useDispatch()
 
   const navitems = [
     { name: 'Home', link: '/' },
@@ -49,29 +60,9 @@ const Navbar = () => {
     AOS.init({ duration: 800, once: true }) // 👈 AOS Init
   }, [])
 
-  useEffect(() => {
-    const storedWishlist = localStorage.getItem('wishlist')
-    if (storedWishlist) {
-      setWishlistItem(JSON.parse(storedWishlist))
-    }
-  }, [wishlistItems])
-
-  useEffect(() => {
-    const storedWishlist = localStorage.getItem('wishlist')
-    if (storedWishlist) {
-      setWishlistItem(JSON.parse(storedWishlist))
-    }
-  }, [])
-
-  // save after every chage
-
-  // useEffect(()=> {
-  //   localStorage.setItem("wishlist", JSON.stringify(wishlistItem))
-  // }, [wishlistItem])
-
   const removeproductfromwishlist = id => {
     const updatedWishlist = wishlistItems.filter(item => item.id !== id)
-    setWishlistItems(updatedWishlist)
+    setwishlist(updatedWishlist)
     localStorage.setItem('wishlist', JSON.stringify(updatedWishlist))
   }
 
@@ -82,19 +73,20 @@ const Navbar = () => {
     return () => clearInterval(interval)
   }, [])
 
+  const valueredux = useSelector(state => state.searchproduct.value)
+
   const updateplaceofsearchbar = e => {
+    const value = e.target.value
     try {
-      if (!e.target.value) {
-        setSearchTerm('')
+      if(!value) {
+        dispatch(setsearchitem(""))
       }
-      if (!e.target.value) {
-        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant', "lawd"])
+      setQuery(value)
+      if (!value) {
+        setsearchholdername(['Banana', 'Apple', 'Shirt', 'Pant', 'lawd'])
       }
-      const value = e.target.value
-      const names = ['Banana', 'Apple', 'Shirt', 'Pant', "lawda"]
+      const names = ['Banana', 'Apple', 'Shirt', 'Pant', 'lawda']
       value.length <= 0 ? setsearchholdername(names) : setsearchholdername([])
-      setQuery(e.target.value)
-      // for searh queary
     } catch (err) {
       alert(err.message)
     }
@@ -205,12 +197,21 @@ const Navbar = () => {
       nav.push('/pages/login')
     }
   }
+
   return (
     <>
       {/* Navbar */}
+  
+
       <section className='flex justify-between items-center px-5 py-2 md:py-4 bg-[#D2D7D] backdrop-blur-[100px] shadow sticky top-0 z-50'>
         <div className=' text-2xl font-bold cursor-pointer hidden md:block'>
-          <Link href={'/'}>FURNSTACK</Link>
+          {/* <Link href={'/'}>FURNSTACK</Link> */}
+              <Link href={'/'}
+            className="text-2xl font-extrabold bg-[url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] 
+             bg-clip-text text-transparent bg-cover bg-center"
+          >
+            FURNSTACK
+          </Link>
         </div>
         <i>
           <MdOutlineMenu
@@ -311,7 +312,7 @@ const Navbar = () => {
                     onClick={() => {
                       setQuery(item.name)
                       setSuggestions([])
-                      setSearchTerm(item.name)
+                      dispatch(setsearchitem(item.name))
                       nav.push('/pages/products')
                     }}
                   >
@@ -339,7 +340,8 @@ const Navbar = () => {
             <div
               onClick={() => {
                 if (!query) return alert('Please enter something to search')
-                setSearchTerm(query),
+
+                dispatch(setsearchitem(query)),
                   setSuggestions([]),
                   setsearchholdername([])
                 nav.push('/pages/products')

@@ -1,27 +1,24 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Head from '../../componants/Head'
 import Navbar from '../../componants/Navbar'
 import { GoHeart, GoHeartFill } from 'react-icons/go'
-import { FiShoppingCart } from 'react-icons/fi'
 import axios from 'axios'
-import { Mycontext } from '../../context/Authcontext'
+import { useSelector, useDispatch } from 'react-redux'
+import { setallallproducts } from '@/app/redux/allproductslice/allproductslice'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import nookies from 'nookies'
 
 export default function Page () {
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 15 // Number of products per page
+  const dispatch = useDispatch()
   const nav = useRouter()
-  const {
-    wishlistItems,
-    setWishlistItems,
-    searchTerm,
-    setDummyData,
-    dummydata
-  } = useContext(Mycontext)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 15
+  const searchitem = useSelector(state => state.searchproduct.value)
+  const allproducts = useSelector(state => state.allproduct.value)
   const [categories, setCategories] = useState([])
   const brands = ['WoodCraft', 'FurniHouse', 'HomeLux', 'ComfortLine']
   const [loading, setLoading] = useState(false)
@@ -31,56 +28,45 @@ export default function Page () {
   const [selectedBrand, setSelectedBrand] = useState('')
   const [serverfilepath, setserverfilepath] = useState('')
 
-  // Fetch products
-  const fetchDummyData = async () => {
-    setLoading(true)
-    try {
-      // const allProduct = await axios.get(
-      //   "https://dummyjson.com/products?limit=100"
-      // );
-      const allProduct = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/product/get-products`
-      )
+  // fetch product to cookies for green dot
 
-      setDummyData(allProduct.data.allproducts)
-      setserverfilepath(allProduct.data.filepath)
-      console.log(allProduct.data.allproducts)
+  // ------------------------
+  // Fetch products from API
+  // ------------------------
+  useEffect(() => {
+    const fetchDummyData = async () => {
+      setLoading(true)
+      try {
+        //     const allProduct = await axios.get(
+        //   "https://dummyjson.com/products?limit=100"
+        // );
+        const allProduct = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/product/get-products`
+        )
+        // Dispatch Redux action to store products
+        dispatch(setallallproducts(allProduct.data.allproducts))
+        setserverfilepath(allProduct.data.filepath)
 
-      const allCategories = [
-        ...new Set(allProduct.data.allproducts.map(p => p.category))
-      ]
-      setCategories(allCategories)
-    } catch (err) {
-      console.log('Error fetching data:', err)
+        // Set categories for filters
+        const allCategories = [
+          ...new Set(allProduct.data.allproducts.map(p => p.category))
+        ]
+        setCategories(allCategories)
+      } catch (err) {
+        console.log('Error fetching data:', err)
+      }
+      setLoading(false)
     }
-    setLoading(false)
-  }
 
-  useEffect(() => {
     fetchDummyData()
-  }, [])
-
-  useEffect(() => {
-    const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || []
-    setWishlistItems(savedWishlist)
-  }, [setWishlistItems])
-
-  const addToWishlist = product => {
-    if (wishlistItems.some(item => item.id === product.id))
-      return alert('Already in wishlist')
-    const productWithPath = { ...product, imagepath: serverfilepath }
-    const updated = [...wishlistItems, productWithPath]
-    setWishlistItems(updated)
-    localStorage.setItem('wishlist', JSON.stringify(updated))
-  }
-
-  const isInWishlist = id => wishlistItems.some(item => item.id === id)
-
+  }, [dispatch])
+  // ------------------------
   // Filtered products
-  const allProductData = dummydata.filter(p => {
+  // ------------------------
+  const allProductData = allproducts.filter(p => {
     const matchesSearch = p.title
       .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+      .includes(searchitem.toLowerCase())
     const matchesCategory =
       !selectedCategory ||
       p.category.toLowerCase() === selectedCategory.toLowerCase()
@@ -91,25 +77,63 @@ export default function Page () {
     return matchesSearch && matchesCategory && matchesBrand && matchesPrice
   })
 
-  // Pagination logic
+  // // ------------------------
+  // // Paginationd
+  // // ------------------------
   const totalPages = Math.ceil(allProductData.length / itemsPerPage)
   const currentItems = allProductData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
 
-  // Reset to first page when filters change
+  // // Reset to first page when filters/search change
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchTerm, selectedCategory, selectedBrand, maxPrice])
+  }, [searchitem, selectedCategory, selectedBrand, maxPrice])
 
-  console.log(serverfilepath)
+  // ------------------------
+  // add to wishlist
+  // ------------------------
+  const addtowishlist = product => {
+    try {
+      const wishlist = nookies.get().wishlist
+        ? JSON.parse(nookies.get().wishlist)
+        : []
+
+      // Check if product already exists in wishlist (by id)
+      const alreadyExists = wishlist.some(item => item.id === product.id)
+
+      if (alreadyExists) {
+        alert('This product is already in your wishlist! ❤️')
+        return
+      }
+
+      // Add new product
+      wishlist.push(product)
+
+      // Save updated wishlist back in cookies
+      nookies.set(null, 'wishlist', JSON.stringify(wishlist), {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
+      })
+
+      alert('Product added to wishlist successfully! ✅')
+      console.log('Product added to wishlist:', product)
+    } catch (err) {
+      console.log('Something went wrong')
+      console.log(err.message) // ✅ correct
+    }
+  }
+
+  // ------------------------
+  // Render
+  // ------------------------
   return (
     <>
-      <Head />
-      <Navbar />
+      {/* <Head /> */}
+      {/* <Navbar /> */}
 
-      {/* Mobile Filter Toggle Button */}
+      {/* Mobile Filter Toggle */}
       <div className='md:hidden p-4'>
         <button
           onClick={() => setShowFilters(!showFilters)}
@@ -120,13 +144,14 @@ export default function Page () {
         </button>
       </div>
 
-      <div className='flex flex-col md:flex-row p-5 items-start justify-between '>
+      <div className='flex flex-col md:flex-row p-5 items-start justify-between'>
         {/* Sidebar */}
         <aside
           className={`w-full md:w-1/5 p-4 bg-gray-100 rounded-xl space-y-6 ${
             showFilters ? 'block' : 'hidden md:block'
           }`}
         >
+          {/* Category Filter */}
           <div>
             <h2 className='font-bold mb-2'>Category</h2>
             {categories.map(cat => (
@@ -148,6 +173,7 @@ export default function Page () {
             </button>
           </div>
 
+          {/* Brand Filter */}
           <div>
             <h2 className='font-bold mb-2'>Brand</h2>
             {brands.map(brand => (
@@ -169,6 +195,7 @@ export default function Page () {
             </button>
           </div>
 
+          {/* Price Filter */}
           <div>
             <h2 className='font-bold mb-2'>Max Price: ${maxPrice}</h2>
             <input
@@ -180,8 +207,6 @@ export default function Page () {
               className='w-full'
             />
           </div>
-
-          {/* Remove Sorting Functionality */}
         </aside>
 
         {/* Products Grid */}
@@ -228,19 +253,25 @@ export default function Page () {
 
                   {/* Wishlist Button */}
                   <button
-                    onClick={() => addToWishlist(product)}
+                    onClick={() => addtowishlist(product)}
                     className='absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors'
                   >
-                    {isInWishlist(product.id) ? (
+                    {/* {addedtowishlist.some(p => p.id === product.id) ? (
                       <GoHeartFill className='w-5 h-5 text-red-500' />
                     ) : (
-                      <GoHeart className='w-5 h-5 text-gray-400' />
-                    )}
+                      <GoHeart className='w-5 h-5 text-red-500' />
+                      
+                    )} */}
                   </button>
                 </div>
 
                 <div className='p-4'>
-                  <h3 className='font-semibold text-gray-800 mb-2 line-clamp-2'>
+                  <h3
+                    className='font-semibold text-gray-800 mb-2 line-clamp-2 '
+                    onClick={() => {
+                      product.thumbnail
+                    }}
+                  >
                     {product.title}
                   </h3>
                   <p className='text-sm text-gray-600 mb-2'>{product.brand}</p>
@@ -270,7 +301,7 @@ export default function Page () {
         </main>
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className='flex justify-center items-center my-8'>
           <button

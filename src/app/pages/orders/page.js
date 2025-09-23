@@ -1,6 +1,5 @@
 "use client"
 import React, { useState } from "react";
-import Navbar from "../../componants/Navbar";
 import Aside from "../../componants/Aside";
 import { Package, Truck, CheckCircle, XCircle } from "lucide-react";
 
@@ -32,10 +31,22 @@ const OrdersPage = () => {
     },
   ]);
 
+  const statusStyle = {
+    Delivered: "bg-green-100 text-green-700 border border-green-300",
+    Shipped: "bg-blue-100 text-blue-700 border border-blue-300",
+    Cancelled: "bg-red-100 text-red-700 border border-red-300",
+    Processing: "bg-yellow-100 text-yellow-700 border border-yellow-300",
+  };
+
+  const statusIcon = {
+    Delivered: <CheckCircle size={16} />,
+    Shipped: <Truck size={16} />,
+    Cancelled: <XCircle size={16} />,
+    Processing: <Package size={16} />,
+  };
+
   return (
     <>
-      <Navbar />
-
       {/* Mobile Top Bar */}
       <div className="lg:hidden flex justify-between items-center p-4 shadow bg-white sticky top-0 z-50">
         <h1 className="font-bold text-lg">My Orders</h1>
@@ -53,48 +64,46 @@ const OrdersPage = () => {
           </p>
 
           {/* Orders Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-white rounded-xl shadow p-4 flex flex-col hover:shadow-lg transition"
+                className="bg-white rounded-xl shadow hover:shadow-lg transition p-5 flex flex-col"
               >
+                {/* Order Header */}
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs text-gray-500">#{order.id}</span>
+                  <span
+                    className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${statusStyle[order.status]}`}
+                  >
+                    {statusIcon[order.status]} {order.status}
+                  </span>
+                </div>
+
+                {/* Product Image */}
                 <img
                   src={order.img}
                   alt={order.product}
                   className="w-full h-40 object-cover rounded-md mb-3 border"
                 />
 
+                {/* Product Details */}
                 <h3 className="font-semibold text-sm mb-1">{order.product}</h3>
                 <p className="text-orange-600 text-[13px] font-bold">
                   {order.price}
                 </p>
-                <p className="text-xs text-gray-500 mb-2">
+                <p className="text-xs text-gray-500 mb-4">
                   Ordered on: {order.date}
                 </p>
 
-                {/* Status */}
-                <div className="flex items-center gap-2 text-sm font-medium mt-auto">
-                  {order.status === "Delivered" && (
-                    <span className="flex items-center gap-1 text-green-600">
-                      <CheckCircle size={16} /> Delivered
-                    </span>
-                  )}
-                  {order.status === "Shipped" && (
-                    <span className="flex items-center gap-1 text-blue-600">
-                      <Truck size={16} /> Shipped
-                    </span>
-                  )}
-                  {order.status === "Cancelled" && (
-                    <span className="flex items-center gap-1 text-red-500">
-                      <XCircle size={16} /> Cancelled
-                    </span>
-                  )}
-                  {order.status === "Processing" && (
-                    <span className="flex items-center gap-1 text-yellow-500">
-                      <Package size={16} /> Processing
-                    </span>
-                  )}
+                {/* Actions */}
+                <div className="mt-auto flex gap-3">
+                  <button className="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs hover:bg-blue-700 transition">
+                    Track
+                  </button>
+                  <button className="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 text-xs border hover:bg-gray-200 transition">
+                    Details
+                  </button>
                 </div>
               </div>
             ))}

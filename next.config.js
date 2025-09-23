@@ -14,8 +14,12 @@ const nextConfig = {
       "upload.wikimedia.org",  // Wikipedia / Wikimedia
        "i.pravatar.cc",
         "w0.peakpx.com",
+        "via.placeholder.com"
+
     ],
   },
 }
 
 module.exports = nextConfig
+
+

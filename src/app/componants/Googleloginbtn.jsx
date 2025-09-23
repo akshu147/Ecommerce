@@ -2,20 +2,27 @@
 import { useEffect } from "react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import { setuserdata } from "../redux/userdataslice/userdataslice"
+import { useDispatch } from "react-redux"
 
 const GoogleLoginButton = () => {
-    const nav = useRouter()
-  // Callback jab Google JWT bhejta hai
+  const dispatch = useDispatch()  // corrected
+  const nav = useRouter()
+
   const handleCallbackResponse = async (response) => {
     try {
       const res = await axios.post(
         "http://localhost:4000/api/user/auth/google",
         { token: response.credential },
-        { withCredentials: true } // cookies allow karega
+        { withCredentials: true }
       )
 
-      console.log("Backend response:", res)
-      if(res.status == 200) {nav.push("/pages/account")}
+      dispatch(setuserdata(res.data.user)) // corrected
+      console.log("Backend response:", res.data.user)
+
+      if (res.status === 200) {
+        nav.push("/pages/account")
+      }
     } catch (error) {
       console.error("Google login failed:", error)
       if (error.response) {
@@ -28,7 +35,7 @@ const GoogleLoginButton = () => {
     if (typeof window !== "undefined" && window.google) {
       window.google.accounts.id.initialize({
         client_id:
-          "674308411765-vj989fsmncdbjfr75it5el6ctm8fkl4j.apps.googleusercontent.com", // <== apna actual client_id
+          "674308411765-vj989fsmncdbjfr75it5el6ctm8fkl4j.apps.googleusercontent.com",
         callback: handleCallbackResponse,
       })
 

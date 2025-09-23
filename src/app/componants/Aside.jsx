@@ -2,122 +2,111 @@
 import React, { useEffect, useState } from 'react'
 import { Heart, Bell, User, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import nookies from 'nookies'
 import axios from 'axios'
+import Image from 'next/image'
+import { useSelector, useDispatch } from 'react-redux'
+import { setuserdata } from '../redux/userdataslice/userdataslice'
 
 const Aside = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [userdata, setuserdata] = useState({})
+  const [isMounted, setIsMounted] = useState(false)
   const nav = useRouter()
+  const dispatch = useDispatch()
 
-  // Axios instance
+  // Redux state se userdata laa rahe hain
+  const userdatava = useSelector((state) => state.userdata.value)
+
   const api = axios.create({
     baseURL: 'http://localhost:4000/api',
-    withCredentials: true, // important for cookies
+    withCredentials: true,
   })
 
-  // Axios interceptor to handle expired access token
-api.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config
-
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-      try {
-        // Make sure the URL is correct
-        const res = await api.get('/user/refresh-token')  
-        console.log(res)
-
-        // Retry original request with new token
-        originalRequest.headers['Authorization'] = `Bearer ${res.data.accessToken}`
-        return api(originalRequest)
-      } catch (refreshError) {
-        nav.push('/login')
-        return Promise.reject(refreshError)
-      }
-    }
-    return Promise.reject(error)
-  }
-)
-
-  // Get user data
-  const getuserdata = async () => {
-    try {
-      const token = nookies.get().accestoken
-      console.log(token, "form asid e page")
-      if (!token) return setuserdata({})
-
-      const response = await api.get('/user/fetch-token-data', {
-        headers: { Authorization: `Bearer ${token}` },
+  const fetchUserData = () => {
+    api
+      .get('/user/fetch-token-data', { withCredentials: true })
+      .then((res) => dispatch(setuserdata(res.data.user)))
+      .catch((err) => {
+        console.log(err.response)
+        if (err.response?.status === 401) {
+          api
+            .get('/user/refresh-token', { withCredentials: true })
+            .then(() =>
+              api.get('/user/fetch-token-data', { withCredentials: true })
+            )
+            .then((res) => {
+              dispatch(setuserdata(res.data.user))
+              console.log(res, 'lakhos')
+            })
+            .catch(() => {
+              dispatch(setuserdata({}))
+              nav.push('/login')
+            })
+        } else {
+          dispatch(setuserdata({}))
+        }
       })
-
-      setuserdata(response.data.user)
-    } catch (err) {
-      setuserdata({})
-      console.log('Fetch user error:', err)
-    }
   }
+
   useEffect(() => {
-    getuserdata()
+    setIsMounted(true)
+    fetchUserData()
   }, [])
 
-  return (
-    <aside
-      className={`fixed rounded-2xl lg:static top-0 left-0 h-[100vh] w-64 bg-slate-100 shadow-md p-4 flex flex-col transform transition-transform duration-300 z-40 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}
-    >
-      {/* Profile Section */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-full bg-pink-200" />
-        <div>
-          <div className="flex justify-between gap-4">
-            <p className="font-semibold">Account</p>
-            <p className="text-sm font-medium text-gray-600 rounded-md">
-              ID: {userdata?.id || 'Guest'}
-            </p>
-          </div>
-          <p className="text-sm text-gray-500">{userdata?.email || 'Not logged in'}</p>
+  if (!isMounted) return null // prevent hydration error
+  console.log(userdatava , "lasldfjalsfjlasdjflkasjfklsdjfklasjfklasjflkasdjfklsdj")
 
-          {userdata?.id ? (
-            <div className="relative group inline-block">
-              <button className="px-3 py-1 text-xs font-semibold text-orange-500 border border-orange-500 rounded-md hover:bg-orange-500 hover:text-white transition">
-                Edit Profile
-              </button>
-              <div className="absolute left-full -translate-x-1/2 mt-2 w-56 bg-black text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all pointer-events-none shadow-lg">
-                <ul className="list-disc pl-4 space-y-1">
-                  <li>Update your name & email</li>
-                  <li>Change profile picture</li>
-                  <li>Reset your password</li>
-                  <li>Edit contact details</li>
-                </ul>
-              </div>
-            </div>
-          ) : (
+  return (
+    <aside className='fixed rounded-2xl lg:static top-0 left-0 h-[100vh] w-64 bg-slate-100 shadow-md p-4 flex flex-col'>
+      {/* Profile */}
+      <div className='flex items-center gap-3 mb-6'>
+        <Image
+          src={userdatava?.avatar || '/default-avatar.png'} // fallback image
+          alt='User Avatar'
+          width={50}
+          height={50}
+          className='rounded-full object-cover'
+        />
+
+        <div>
+          <p className='font-semibold'>Account: {userdatava?.id || 'Guest'}</p>
+          <p className='text-sm text-gray-500'>
+            {userdatava?.email || 'Not logged in'}
+          </p>
+          {!userdatava?.id && (
             <button
               onClick={() => nav.push('/login')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+              className='px-4 py-2 bg-blue-600 text-white rounded-md'
             >
-              Sign Up / Login
+              Login / Signup
             </button>
           )}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-4">
-        <button className="flex items-center gap-2 text-gray-700 hover:text-orange-500" onClick={() => nav.push('/pages/account')}>
-          <User size={18} /> My Account
+      <nav className='flex flex-col gap-3 border-l border-gray-200 pl-4 py-4'>
+        <button
+          onClick={() => nav.push('/pages/account')}
+          className='flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition-all duration-200'
+        >
+          <User size={20} /> My Account
         </button>
-        <button className="flex items-center gap-2 text-orange-500 font-semibold" onClick={() => nav.push('/pages/wishlist')}>
-          <Heart size={18} /> Favorites
+        <button
+          onClick={() => nav.push('/pages/wishlist')}
+          className='flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-pink-100 hover:text-pink-600 rounded-md transition-all duration-200'
+        >
+          <Heart size={20} /> Favorites
         </button>
-        <button className="flex items-center gap-2 text-gray-700 hover:text-orange-500" onClick={() => nav.push('/pages/orders')}>
-          <ShoppingCart size={18} /> Orders
+        <button
+          onClick={() => nav.push('/pages/orders')}
+          className='flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-all duration-200'
+        >
+          <ShoppingCart size={20} /> Orders
         </button>
-        <button className="flex items-center gap-2 text-gray-700 hover:text-orange-500" onClick={() => nav.push('/pages/notification')}>
-          <Bell size={18} /> Notifications
+        <button
+          onClick={() => nav.push('/pages/notification')}
+          className='flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-green-100 hover:text-green-600 rounded-md transition-all duration-200'
+        >
+          <Bell size={20} /> Notifications
         </button>
       </nav>
     </aside>
