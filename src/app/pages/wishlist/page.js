@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { Heart, Menu, X } from 'lucide-react'
 import nookies from 'nookies'
 import Aside from '../../componants/Aside'
+import { setwishlist } from '@/app/redux/wishlistslice/wishlistslice'
+import { useDispatch} from 'react-redux'
+
 
 const Page = () => {
-  const products = [
-    { id: 1, name: 'Meja Tamu / Samping Minimalist', price: 'Rp. 3.829.000', location: 'Kab. Sidoarjo', rating: 4, img: 'https://via.placeholder.com/150' },
-    { id: 2, name: 'Meja Tamu Minimalist', price: 'Rp. 48.500', location: 'Kab. Jakarta Selatan', rating: 3, img: 'https://via.placeholder.com/150' },
-    { id: 3, name: 'RISATOR Keranjang', price: 'Rp. 164.000', location: 'Kab. Sidoarjo', rating: 5, img: 'https://via.placeholder.com/150' }
-  ]
+  // const wishlisitem = useSelector(state => state.wishlist.value)
+  const dispatch = useDispatch()
 
   const [favorites, setFavorites] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -21,11 +21,14 @@ const Page = () => {
     if (cookies.wishlist) {
       try {
         setFavorites(JSON.parse(cookies.wishlist))
+        dispatch(setwishlist(JSON.parse(cookies.wishlist)))
+
       } catch (err) {
         console.log('Error parsing wishlist cookie:', err.message)
+        dispatch(setwishlist([]))
       }
     }
-  }, [])
+  }, [dispatch])
 
   // Toggle wishlist
   const toggleWishlist = (product) => {

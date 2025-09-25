@@ -1,7 +1,8 @@
-"use client"
+'use client'
 import React, { useState } from "react";
 import Aside from "../../componants/Aside";
 import { Package, Truck, CheckCircle, XCircle } from "lucide-react";
+import Image from "next/image"; // ✅ Import Image
 
 const OrdersPage = () => {
   const [orders] = useState([
@@ -81,11 +82,14 @@ const OrdersPage = () => {
                 </div>
 
                 {/* Product Image */}
-                <img
-                  src={order.img}
-                  alt={order.product}
-                  className="w-full h-40 object-cover rounded-md mb-3 border"
-                />
+                <div className="w-full h-40 relative mb-3 border rounded-md overflow-hidden">
+                  <Image
+                    src={order.img}
+                    alt={order.product}
+                    fill
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
 
                 {/* Product Details */}
                 <h3 className="font-semibold text-sm mb-1">{order.product}</h3>

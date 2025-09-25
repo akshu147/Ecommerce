@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-    value:"madarchod"
+    value:[]
 }
 const wishlistslice = createSlice({
     name:[],
@@ -9,8 +9,7 @@ const wishlistslice = createSlice({
         setwishlist:(state, action)=> {
             state.value = action.payload
         }
-
     }
 })
 export const {setwishlist} = wishlistslice.actions
-export default wishlistslice.reducer // complete
+export default wishlistslice.reducer // completes

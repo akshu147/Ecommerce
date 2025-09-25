@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { FcGoogle } from 'react-icons/fc'
 import { FaApple, FaEye, FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
 import Image from 'next/image'
@@ -53,7 +52,7 @@ const checkuseralradylogn = () => {
 }
 useEffect(()=> {
   checkuseralradylogn()
-}, [])
+}, [checkuseralradylogn])
 
   const userRegister = async e => {
     e.preventDefault()
@@ -79,7 +78,7 @@ useEffect(()=> {
     }
   }
 
-  const handleLogin = async e => {
+  const handleLogin = async () => {
     e.preventDefault()
     try {
       const response = await axios.post(
@@ -174,8 +173,6 @@ useEffect(()=> {
       setIsSending(false)
     }
   }
-
-  const handleGoogleSignIn = () => console.log('Google Sign In clicked')
   const handleAppleSignIn = () => console.log('Apple Sign In clicked')
 
   if (!mounted) return null

@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { IoMdCart } from 'react-icons/io'
 import { FaUserCircle } from 'react-icons/fa'
 import Link from 'next/link'
-import { X, Minus, Plus, Trash2 } from 'lucide-react'
-import { Mycontext } from '../context/Authcontext'
+// import { X, Minus, Plus, Trash2 } from 'lucide-react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -24,23 +23,14 @@ const Navbar = () => {
   const [showmobilemenu, setshowmobilemenu] = useState('-100%')
   const [query, setQuery] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  // const wishlistitem = useSelector(state => state.wishlist.value)
+  const [wishlistitem, setwishlistitem] = useState([])
   const [searchholdernames, setsearchholdername] = useState([
     'apple',
     'banana',
     'cat',
     'sot'
   ])
-  const wishlistItems = ''
-  // const {
-  //   wishlistItems,
-  //   setWishlistItems,
-  //   query,
-  //   setQuery,
-  //   searchTerm,
-  //   setSearchTerm,
-  //   setsearchholdername,
-  //   searchholdernames
-  // } = useContext(Mycontext)
   const [index, setIndex] = useState(0)
   const [suggestions, setSuggestions] = useState([]) // for search functionality
   const [loadingSuggestions, setLoadingSuggestions] = useState(false) // loading state
@@ -189,6 +179,11 @@ const Navbar = () => {
     }
   ]
 
+
+
+
+  
+
   const checkiflogin = () => {
     const user = nookies.get('refreshToken')
     if (user && user.refreshToken) {
@@ -197,6 +192,7 @@ const Navbar = () => {
       nav.push('/pages/login')
     }
   }
+
 
   return (
     <>
@@ -379,7 +375,7 @@ const Navbar = () => {
           <div className='relative cursor-pointer'>
             <IoMdCart className='text-[20px] md:text-[26px]' />
             <p className='absolute top-0 left-full transform -translate-y-1/2 -translate-x-1/2 text-black text-[13px] font-bold'>
-              {cartItems?.length || 0}
+              {wishlistitem?.length || 0}
             </p>
           </div>
 
@@ -392,34 +388,36 @@ const Navbar = () => {
         </div>
       </section>
 
-      <div className='hidden lg:block'>
-        <div className='flex justify-evenly bg-black text-white text-[14px] mx-[100px] rounded-bl-[20px] rounded-br-[20px]'>
-          {furnitureCategories.map((category, idx) => (
-            <div
-              key={idx}
-              className=' hover:bg-gray-800 cursor-pointer z-40 relative group'
-            >
-              <h3 className='font-semibold mb-2 relative'>{category.name}</h3>
-              <div className='hidden absolute top-full left-0 p-2 bg-black text-white group-hover:block w-max rounded-md shadow'>
-                {category.children.map((subcat, subidx) => (
-                  <p
-                    key={subidx}
-                    onClick={() => {
-                      setQuery(subcat)
-                      setSearchTerm(subcat)
-                      setsearchholdername([])
+      <div className='hidden lg:block '>
+      <div className='bg-gradient-to-r from-[#00BEF5] via-[#0077B6] to-[#00F5BE] flex justify-evenly text-white text-[14px] mx-[100px] rounded-bl-[20px] rounded-br-[20px]'>
+        <Link className='font-semibold cursor-pointer border-b-[2px] bg-black text-white rounded-2xl px-3 hover:bg-white hover:text-black border-black' href={'/pages/payment'}><div>CNC Designs</div></Link>
+  {furnitureCategories.map((category, idx) => (
+    <div
+      key={idx}
+      className='hover:bg-gray-800 cursor-pointer z-40 relative group'
+    >
+      <h3 className='font-semibold mb-2 relative'>{category.name}</h3>
+      <div className='hidden absolute top-full left-0 p-2 bg-black text-white group-hover:block w-max rounded-md shadow'>
+        {category.children.map((subcat, subidx) => (
+          <p
+            key={subidx}
+            onClick={() => {
+              setQuery(subcat)
+              setSearchTerm(subcat)
+              setsearchholdername([])
 
-                      nav.push('/pages/products')
-                    }}
-                    className='text-sm hover:bg-gray-700 px-2 py-1 rounde'
-                  >
-                    {subcat}
-                  </p>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+              nav.push('/pages/products')
+            }}
+            className='text-sm hover:bg-gray-700 px-2 py-1 rounded'
+          >
+            {subcat}
+          </p>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+
       </div>
       <form className=' w-full block md:hidden px-4'>
         <div className='relative flex '>

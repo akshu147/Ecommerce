@@ -1,12 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
-import Head from '../../componants/Head'
-import Navbar from '../../componants/Navbar'
-import { GoHeart, GoHeartFill } from 'react-icons/go'
+// import { GoHeart, GoHeartFill } from 'react-icons/go'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { setallallproducts } from '@/app/redux/allproductslice/allproductslice'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -14,7 +11,7 @@ import nookies from 'nookies'
 
 export default function Page () {
   const dispatch = useDispatch()
-  const nav = useRouter()
+  // const nav = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
   const searchitem = useSelector(state => state.searchproduct.value)
