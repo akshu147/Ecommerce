@@ -179,20 +179,17 @@ const Navbar = () => {
     }
   ]
 
-
-
-
-  
-
   const checkiflogin = () => {
-    const user = nookies.get('refreshToken')
-    if (user && user.refreshToken) {
+    const cookies = nookies.get()
+    const token = cookies.accestoken
+    console.log(token)
+    if(token) {
       nav.push('/pages/account')
-    } else {
+    }
+    else{
       nav.push('/pages/login')
     }
   }
-
 
   return (
     <>

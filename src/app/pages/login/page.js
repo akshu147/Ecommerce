@@ -160,6 +160,7 @@ useEffect(()=> {
           err.response?.data?.message || err.message || 'Failed to send OTP'
         setOtpMessage(msg)
       }
+      
       messageTimeoutRef.current = setTimeout(() => setOtpMessage(''), 4000)
 
       if (timerRef.current) {

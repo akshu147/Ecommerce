@@ -1,19 +1,18 @@
 "use client";
 import { Star, Heart } from "lucide-react";
-import { useState, useContext } from "react";
+import { useState} from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import Navbar from "../../../componants/Navbar";
 import RelatedProducts from "../../../componants/RelatedProducts";
-import { Mycontext } from "../../../context/Authcontext";
 
 export default function Page() {
   const searchParams = useSearchParams();
+  const params = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useContext(Mycontext);
 
   // Get parameters from URL
-  const id = searchParams.get("id");
+  const id = params.id;
   const name = searchParams.get("name");
   const price = searchParams.get("price");
   const image = searchParams.get("image");
@@ -36,12 +35,13 @@ export default function Page() {
   };
 
   const handleWishlistToggle = () => {
-    if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id);
-    } else {
-      addToWishlist(product);
-    }
+    // if (isInWishlist(product.id)) {
+    //   removeFromWishlist(product.id);
+    // } else {
+    //   addToWishlist(product);
+    // }
   };
+  
 
   return (
     <>
@@ -133,18 +133,18 @@ export default function Page() {
             </button>
             <button
               onClick={handleWishlistToggle}
-              className={`font-bold rounded-xl px-6 py-2 shadow flex items-center gap-2 ${
-                isInWishlist(product.id)
-                  ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-              }`}
+              // className={`font-bold rounded-xl px-6 py-2 shadow flex items-center gap-2 ${
+              //   isInWishlist(product.id)
+              //     ? "bg-red-500 hover:bg-red-600 text-white"
+              //     : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+              // }`}
             >
               <Heart
-                className={`w-5 h-5 ${
-                  isInWishlist(product.id) ? "fill-current" : ""
-                }`}
+                // className={`w-5 h-5 ${
+                //   isInWishlist(product.id) ? "fill-current" : ""
+                // }`}
               />
-              {isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+              {/* {isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"} */}
             </button>
           </div>
         </div>

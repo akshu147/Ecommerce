@@ -1,1 +1,4 @@
 - [ ] Add automatic token refresh every 15 minutes in Aside.jsx
+- [x] Fix product detail page id retrieval issue
+  - [x] Update detail page to use useParams for id instead of searchParams
+  - [ ] Test the fix by navigating to product detail

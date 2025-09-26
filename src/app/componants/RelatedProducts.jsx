@@ -2,17 +2,17 @@
 import { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mycontext } from '../context/Authcontext';
+import { useSelector } from 'react-redux';
 
 export default function RelatedProducts({ currentProduct, category, brand }) {
-  const { dummydata } = useContext(Mycontext);
+  const alldata = useSelector(state=> state.allproducts.value);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (dummydata.length > 0 && currentProduct) {
+    if (alldata.length > 0 && currentProduct) {
       // Filter related products
-      let filtered = dummydata.filter(product => 
+      let filtered = alldata.filter(product => 
         product.id !== currentProduct.id && 
         (product.category === category || product.brand === brand)
       );
@@ -30,7 +30,7 @@ export default function RelatedProducts({ currentProduct, category, brand }) {
       setRelatedProducts(filtered);
       setLoading(false);
     }
-  }, [dummydata, currentProduct, category, brand]);
+  }, [alldata, currentProduct, category, brand]);
 
   if (loading) {
     return (
