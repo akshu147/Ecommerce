@@ -183,11 +183,12 @@ const Navbar = () => {
     const cookies = nookies.get()
     const token = cookies.accestoken
     console.log(token)
+    
     if(token) {
       nav.push('/pages/account')
     }
     else{
-      nav.push('/pages/login')
+      // nav.push('/pages/login')
     }
   }
 

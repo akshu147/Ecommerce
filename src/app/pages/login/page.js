@@ -9,7 +9,6 @@ import Button from '../../componants/Button'
 import nookies from 'nookies'
 import Googleloginbtn from '../../componants/Googleloginbtn'
 
-
 const AuthPage = () => {
   const [ifsignup, setIfSignup] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -43,16 +42,17 @@ const AuthPage = () => {
     ? passwordRegex.test(formdata.password)
     : null
 
-const checkuseralradylogn = () => {
-  const cookies = nookies.get()
-  const user = cookies.accestoken   // 👈 ab sahi
-  if (user) {
-    nav.push("/")
-  }
-}
-useEffect(()=> {
-  checkuseralradylogn()
-}, [checkuseralradylogn])
+  useEffect(() => {
+    const checkuseralradylogn = () => {
+      const cookies = nookies.get()
+      const user = cookies.accestoken
+      if (user) {
+        nav.push('/')
+      }
+    }
+
+    checkuseralradylogn()
+  }, [nav])
 
   const userRegister = async e => {
     e.preventDefault()
@@ -65,7 +65,8 @@ useEffect(()=> {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/sign-up`,
-        formdata, {withCredentials:true}
+        formdata,
+        { withCredentials: true }
       )
       console.log(response)
 
@@ -115,7 +116,7 @@ useEffect(()=> {
       try {
         const audio = new Audio('/sounds/best-notification-1-286672.mp3')
         audio.play().catch(() => {})
-      } catch (e) {}
+      } catch (e) {console.log(e)}
 
       // 👉 3) Call backend
       const response = await axios.post(
@@ -160,7 +161,7 @@ useEffect(()=> {
           err.response?.data?.message || err.message || 'Failed to send OTP'
         setOtpMessage(msg)
       }
-      
+
       messageTimeoutRef.current = setTimeout(() => setOtpMessage(''), 4000)
 
       if (timerRef.current) {
@@ -193,7 +194,7 @@ useEffect(()=> {
 
           {/* Social login buttons */}
           <div className='flex gap-4 justify-center mb-4'>
-         <Googleloginbtn/>
+            <Googleloginbtn />
             <button
               onClick={handleAppleSignIn}
               className='flex text-[15px] items-center gap-2 border rounded-lg px-4 py-2 hover:bg-gray-100'

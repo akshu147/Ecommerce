@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { Heart, Bell, User, ShoppingCart, Menu, X } from "lucide-react"
 import Navbar from "../../componants/Navbar"
 
-const page = () => {
+const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   // Dummy notifications
@@ -109,4 +109,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

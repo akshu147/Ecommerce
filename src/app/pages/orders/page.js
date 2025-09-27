@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import Aside from '../../componants/Aside'
 import { Package, Truck, CheckCircle, XCircle } from 'lucide-react'
 import Image from 'next/image' // ✅ Import Image

@@ -266,7 +266,7 @@ export default function Page () {
                   <h3
                     className='font-semibold text-gray-800 mb-2 line-clamp-2 '
                     onClick={() => {
-                      product.thumbnail
+                      console.log(product.thumbnail)
                     }}
                   >
                     {product.title}

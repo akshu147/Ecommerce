@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {useEffect, useMemo, useState } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -19,9 +19,7 @@ import {
 } from 'react-icons/fi'
 import Image from 'next/image'
 export default function HomePage () {
-  // const { dummydata } = useContext(Mycontext)
-  const dummydata = "" //for only stop error not twhor
-  console.log(dummydata, 'halo')
+ 
   // --- AOS ---
   useEffect(() => {
     AOS.init({ duration: 800, once: false, offset: 40, easing: 'ease-out' })
