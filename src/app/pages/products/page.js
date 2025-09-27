@@ -7,7 +7,6 @@ import { setallallproducts } from '@/app/redux/allproductslice/allproductslice'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import nookies from 'nookies'
 
 export default function Page () {
   const dispatch = useDispatch()
@@ -91,36 +90,35 @@ export default function Page () {
   // ------------------------
   // add to wishlist
   // ------------------------
-  const addtowishlist = product => {
-    try {
-      const wishlist = nookies.get().wishlist
-        ? JSON.parse(nookies.get().wishlist)
-        : []
+const addtowishlist = product => {
+  try {
+    // Get wishlist from localStorage
+    const wishlist = localStorage.getItem('wishlist')
+      ? JSON.parse(localStorage.getItem('wishlist'))
+      : []
 
-      // Check if product already exists in wishlist (by id)
-      const alreadyExists = wishlist.some(item => item.id === product.id)
+    // Check if product already exists in wishlist (by id)
+    const alreadyExists = wishlist.some(item => item.id === product.id)
 
-      if (alreadyExists) {
-        alert('This product is already in your wishlist! ❤️')
-        return
-      }
-
-      // Add new product
-      wishlist.push(product)
-
-      // Save updated wishlist back in cookies
-      nookies.set(null, 'wishlist', JSON.stringify(wishlist), {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
-      })
-
-      alert('Product added to wishlist successfully! ✅')
-      console.log('Product added to wishlist:', product)
-    } catch (err) {
-      console.log('Something went wrong')
-      console.log(err.message) // ✅ correct
+    if (alreadyExists) {
+      alert('This product is already in your wishlist! ❤️')
+      return
     }
+
+    // Add new product
+    wishlist.push(product)
+
+    // Save updated wishlist back to localStorage
+    localStorage.setItem('wishlist', JSON.stringify(wishlist))
+
+    alert('Product added to wishlist successfully! ✅')
+    console.log('Product added to wishlist:', product)
+  } catch (err) {
+    console.log('Something went wrong')
+    console.log(err.message)
   }
+}
+
 
   // ------------------------
   // Render

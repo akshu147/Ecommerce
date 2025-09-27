@@ -1,21 +1,20 @@
+'use client'
 import React, { useEffect } from 'react'
-import nookies from 'nookies'
 import { useRouter } from 'next/navigation'
 
-const Checkiflogin = () => {
-    const nav = useRouter()
-    useEffect(()=> {
-        const cookies = nookies.get()
-        console.log(cookies.accestoken , "asldfjlasdjflkasjfklsdjfklasjfklasjflkasdjfklsdj")
-        if(!cookies.accestoken) {
-            nav.push('/pages/login')
-        }
-    })
-  return (
-    <>
-      
-    </>
-  )
+const CheckIfLogin = () => {
+  const nav = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken')
+    console.log(token, "access token from localStorage")
+
+    if (!token) {
+      nav.push('/pages/login')
+    }
+  }, [])
+
+  return null
 }
 
-export default Checkiflogin
+export default CheckIfLogin

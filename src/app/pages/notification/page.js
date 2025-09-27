@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from "react"
 import { Heart, Bell, User, ShoppingCart, Menu, X } from "lucide-react"
-import Navbar from "../../componants/Navbar"
 
 const Page = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -33,7 +32,6 @@ const Page = () => {
 
   return (
     <>
-      <Navbar />
       {/* Mobile Topbar */}
       <div className="lg:hidden flex justify-between items-center p-4 shadow bg-white sticky top-0 z-50">
         <h1 className="font-bold text-lg">Notifications</h1>

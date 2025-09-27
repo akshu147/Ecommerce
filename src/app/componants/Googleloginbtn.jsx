@@ -4,7 +4,6 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { setuserdata } from '../redux/userdataslice/userdataslice'
 import { useDispatch } from 'react-redux'
-import nookies from 'nookies'
 
 const GoogleLoginButton = () => {
   const dispatch = useDispatch() // corrected
@@ -15,23 +14,20 @@ const GoogleLoginButton = () => {
       const res = await axios.post(
         'http://localhost:4000/api/user/auth/google',
         { token: response.credential },
-        { withCredentials: true }
+        { withCredentials: true } // if your backend sets httpOnly cookies
       )
 
-      dispatch(setuserdata(res.data.user)) // corrected
-      console.log('Backend response:', res)
       if (res.status === 200) {
-        nav.push('/pages/account')
-      }
-      if (res.status === 200 && res.data.accessToken) {
-        nookies.set(null, 'accestoken', res.data.accessToken, {
-          path: '/',
-          maxAge: 7 * 24 * 60 * 60 // 7 days
-        })
-      }
+        // Redux me user store karna
+        dispatch(setuserdata(res.data.user))
 
-      if (res.status === 200) {
-        nav.push("/pages/account")
+        // Cookie set karna
+        if (res.data.accessToken) {
+          localStorage.setItem('accessToken', res.data.accessToken)
+        }
+
+        // Redirect user
+        nav.push('/pages/account')
       }
     } catch (error) {
       console.error('Google login failed:', error)

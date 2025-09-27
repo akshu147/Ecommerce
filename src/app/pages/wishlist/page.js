@@ -1,52 +1,36 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import { Heart, Menu, X } from 'lucide-react'
-import nookies from 'nookies'
-import Aside from '../../componants/Aside'
-import { setwishlist } from '@/app/redux/wishlistslice/wishlistslice'
-import { useDispatch} from 'react-redux'
-
+import React, { useEffect, useState } from "react"
+import { Heart, Menu, X } from "lucide-react"
+import Aside from "../../componants/Aside"
 
 const Page = () => {
-  // const wishlisitem = useSelector(state => state.wishlist.value)
-  const dispatch = useDispatch()
-
-  const [favorites, setFavorites] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [favorites, setFavorites] = useState([])
 
-  // Load wishlist from cookies
+  // Load wishlist from localStorage on mount
   useEffect(() => {
-    const cookies = nookies.get()
-    if (cookies.wishlist) {
-      try {
-        setFavorites(JSON.parse(cookies.wishlist))
-        dispatch(setwishlist(JSON.parse(cookies.wishlist)))
-
-      } catch (err) {
-        console.log('Error parsing wishlist cookie:', err.message)
-        dispatch(setwishlist([]))
-      }
+    const products = localStorage.getItem("wishlist")
+    if (products) {
+      setFavorites(JSON.parse(products))
     }
-  }, [dispatch])
+  }, [])
 
-  // Toggle wishlist
+  // Toggle wishlist: add/remove product
   const toggleWishlist = (product) => {
     let updated
-    if (favorites.find(item => item.id === product.id)) {
-      updated = favorites.filter(item => item.id !== product.id)
+    if (favorites.find((item) => item.id === product.id)) {
+      updated = favorites.filter((item) => item.id !== product.id)
     } else {
       updated = [...favorites, product]
     }
+
     setFavorites(updated)
-    nookies.set(null, 'wishlist', JSON.stringify(updated), {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365 * 10
-    })
+    localStorage.setItem("wishlist", JSON.stringify(updated))
   }
 
-  // Filtered products based on search
-  const filteredFavorites = favorites.filter(item =>
+  // Filtered products based on search term
+  const filteredFavorites = favorites.filter((item) =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -67,7 +51,9 @@ const Page = () => {
         {/* Main Content */}
         <main className="rounded-2xl flex-1 p-4 lg:p-8 bg-slate-100">
           <h2 className="text-2xl font-bold mb-2">Favorites</h2>
-          <p className="text-gray-500 mb-6">Find your saved items and get ready to order them.</p>
+          <p className="text-gray-500 mb-6">
+            Find your saved items and get ready to order them.
+          </p>
 
           {/* Search Bar */}
           <div className="mb-6">
@@ -82,17 +68,23 @@ const Page = () => {
 
           {/* Product Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2">
-            {filteredFavorites.map(item => (
+            {filteredFavorites.map((item) => (
               <div
                 key={item.id}
                 className="bg-white rounded-xl shadow p-2 flex flex-col hover:shadow-lg transition"
               >
-                <h3 className="hidden md:block font-semibold text-sm mb-1">{item.title}</h3>
+                <h3 className="hidden md:block font-semibold text-sm mb-1">
+                  {item.title}
+                </h3>
                 <p className="text-orange-600 text-[12px] font-bold">{item.price}</p>
-                <p className="hidden md:block text-xs text-gray-500 mb-2">{item.location}</p>
+                <p className="hidden md:block text-xs text-gray-500 mb-2">
+                  {item.location}
+                </p>
                 <div className="flex items-center gap-1">
                   {Array.from({ length: item.rating }).map((_, i) => (
-                    <span key={i} className="hidden md:block text-yellow-400">★</span>
+                    <span key={i} className="hidden md:block text-yellow-400">
+                      ★
+                    </span>
                   ))}
                 </div>
 
@@ -100,7 +92,11 @@ const Page = () => {
                   <div className="flex justify-between items-center mt-2">
                     <button
                       onClick={() => toggleWishlist(item)}
-                      className={`transition ${favorites.find(f => f.id === item.id) ? 'text-red-500' : 'text-gray-400'}`}
+                      className={`transition ${
+                        favorites.find((f) => f.id === item.id)
+                          ? "text-red-500"
+                          : "text-gray-400"
+                      }`}
                     >
                       <Heart size={20} />
                     </button>

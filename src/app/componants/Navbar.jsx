@@ -13,11 +13,12 @@ import { useRouter } from 'next/navigation'
 import { MdOutlineMenu } from 'react-icons/md'
 import { debounce } from '../../utils/debounce'
 import { LuHeartHandshake } from 'react-icons/lu'
-import nookies from 'nookies'
 import { useDispatch, useSelector } from 'react-redux'
 import { setwishlist } from '../redux/wishlistslice/wishlistslice'
 import { setsearchitem } from '../redux/productsearchslice/productsearchslice'
+
 const Navbar = () => {
+  const dispatch = useDispatch()
   const [showMenu, setShowMenu] = useState(false)
   const [cartItems, setCartItems] = useState([])
   const [showmobilemenu, setshowmobilemenu] = useState('-100%')
@@ -35,7 +36,6 @@ const Navbar = () => {
   const [suggestions, setSuggestions] = useState([]) // for search functionality
   const [loadingSuggestions, setLoadingSuggestions] = useState(false) // loading state
   const nav = useRouter()
-  const dispatch = useDispatch()
 
   const navitems = [
     { name: 'Home', link: '/' },
@@ -179,18 +179,18 @@ const Navbar = () => {
     }
   ]
 
-  const checkiflogin = () => {
-    const cookies = nookies.get()
-    const token = cookies.accestoken
-    console.log(token)
-    
-    if(token) {
-      nav.push('/pages/account')
-    }
-    else{
-      // nav.push('/pages/login')
-    }
+const checkiflogin = () => {
+  const token = localStorage.getItem('accessToken') // ✅ get token from localStorage
+
+  if (token) {
+    nav.push('/pages/account')
+  } else {
+    nav.push('/pages/login')
   }
+}
+
+    // Load wishlist from cookies
+
 
   return (
     <>
