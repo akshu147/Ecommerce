@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 
 export default function RelatedProducts({ currentProduct, category, brand }) {
-  const alldata = useSelector(state=> state.allproducts.value);
+  const alldata = useSelector(state=> state.allproduct.value);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
