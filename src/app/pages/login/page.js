@@ -6,8 +6,9 @@ import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Button from '../../componants/Button'
-import nookies from 'nookies'
 import Googleloginbtn from '../../componants/Googleloginbtn'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const AuthPage = () => {
   const [ifsignup, setIfSignup] = useState(false)
@@ -16,9 +17,7 @@ const AuthPage = () => {
   const [otpvalue, setOtpValue] = useState('Send OTP')
   const [mounted, setMounted] = useState(false)
   const [otpTimer, setOtpTimer] = useState(0)
-  const [otpMessage, setOtpMessage] = useState('')
-  const timerRef = useRef(null) // holds the interval id
-  const messageTimeoutRef = useRef(null) // holds the toast timeout id
+  const timerRef = useRef(null)
   const [isSending, setIsSending] = useState(false)
   const nav = useRouter()
 
@@ -42,23 +41,19 @@ const AuthPage = () => {
     ? passwordRegex.test(formdata.password)
     : null
 
-  useEffect(() => {
-    const checkuseralradylogn = () => {
-      const cookies = nookies.get()
-      const user = cookies.accestoken
-      if (user) {
-        nav.push('/')
-      }
-    }
 
-    checkuseralradylogn()
-  }, [nav])
+useEffect(()=> {
+  const token = localStorage.getItem('accessToken')
+  if(token){
+    nav.push('/')
+  }
+}, [])
 
   const userRegister = async e => {
     e.preventDefault()
-    if (!isEmailValid) return alert('Invalid email format')
+    if (!isEmailValid) return toast.error('Invalid email format')
     if (!isPasswordValid)
-      return alert(
+      return toast.error(
         'Password must be 8+ chars, include uppercase, lowercase, number & special char'
       )
 
@@ -68,18 +63,17 @@ const AuthPage = () => {
         formdata,
         { withCredentials: true }
       )
-      console.log(response)
 
-      if (response.status == 201) return nav.push('/pages/account')
-      alert('Signup successful')
-      setIfSignup(true)
+      if (response.status == 201) {
+        toast.success('Signup successful 🎉')
+        return nav.push('/pages/account')
+      }
     } catch (err) {
-      console.log(err.message)
-      alert(err.response?.data?.message || 'Something went wrong!')
+      toast.error(err.response?.data?.message || 'Something went wrong!')
     }
   }
 
-  const handleLogin = async () => {
+  const handleLogin = async e => {
     e.preventDefault()
     try {
       const response = await axios.post(
@@ -90,50 +84,31 @@ const AuthPage = () => {
         }
       )
 
-      alert('Login successful')
+      toast.success('Login successful 🎉')
+      nav.push('/')
     } catch (err) {
-      alert(err.response?.data?.message || 'Something went wrong!')
+      toast.error(err.response?.data?.message || 'Something went wrong!')
     }
   }
 
   const sendOtp = async () => {
     if (!formdata.email || !emailRegex.test(formdata.email)) {
-      setOtpMessage('Please enter a valid email')
-      if (messageTimeoutRef.current) clearTimeout(messageTimeoutRef.current)
-      messageTimeoutRef.current = setTimeout(() => setOtpMessage(''), 3000)
-      return
+      return toast.error('Please enter a valid email')
     }
 
     if (isSending || otpTimer > 0) return
     setIsSending(true)
 
-    // 👉 1) Show immediate "Sending..." feedback
-    setOtpMessage('Sending OTP...')
-    if (messageTimeoutRef.current) clearTimeout(messageTimeoutRef.current)
-
     try {
-      // 👉 2) Optimistically play sound right away
-      try {
-        const audio = new Audio('/sounds/best-notification-1-286672.mp3')
-        audio.play().catch(() => {})
-      } catch (e) {console.log(e)}
-
-      // 👉 3) Call backend
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/get-otp`,
         { email: formdata.email }
       )
 
-      // 👉 4) Update to success message
-      setOtpMessage('OTP has been sent successfully ✅ valid for 100 second')
-      messageTimeoutRef.current = setTimeout(() => setOtpMessage(''), 4000)
-
-      // 👉 5) Start timer
+      toast.success('OTP sent successfully ✅ valid for 100 seconds')
       setIfSendOtp(true)
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-      }
+
+      if (timerRef.current) clearInterval(timerRef.current)
 
       let remaining = 100
       setOtpTimer(remaining)
@@ -155,39 +130,26 @@ const AuthPage = () => {
       }, 1000)
     } catch (err) {
       if (err.response?.status === 409) {
-        setOtpMessage('Email is already in use')
+        toast.error('Email is already in use')
       } else {
-        const msg =
-          err.response?.data?.message || err.message || 'Failed to send OTP'
-        setOtpMessage(msg)
-      }
-
-      messageTimeoutRef.current = setTimeout(() => setOtpMessage(''), 4000)
-
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-        setOtpValue('Send OTP')
-        setOtpTimer(0)
-        setIfSendOtp(false)
+        toast.error(err.response?.data?.message || 'Failed to send OTP')
       }
     } finally {
       setIsSending(false)
     }
   }
-  const handleAppleSignIn = () => console.log('Apple Sign In clicked')
+
+  const handleAppleSignIn = () => toast.info('Apple Sign In clicked')
 
   if (!mounted) return null
+
   return (
     <div className='min-h-screen flex justify-center items-center bg-[#030712] p-4'>
+      {/* Toast Container */}
+      <ToastContainer position="top-center" autoClose={3000} />
+
       <div className='text-white shadow-[2px_3px_10px_white] sm:mx-[50px] md:mx-[100px] lg:mx-[200px] rounded-2xl w-full grid md:grid-cols-2 overflow-hidden'>
         <div className='p-8 flex flex-col gap-4'>
-          {otpMessage && (
-            <div className='bg-green-100 text-green-800 text-sm px-4 py-2 rounded-lg mb-2 text-center'>
-              {otpMessage}
-            </div>
-          )}
-
           <h2 className='text-2xl font-bold text-center mb-4'>
             {ifsignup ? 'Login' : 'Sign Up'}
           </h2>
@@ -203,7 +165,7 @@ const AuthPage = () => {
             </button>
           </div>
 
-          {/* Form */}
+          {/* Forms */}
           {ifsignup ? (
             <form onSubmit={handleLogin} className='flex flex-col gap-3'>
               <fieldset className='border rounded-lg p-2'>
@@ -219,9 +181,6 @@ const AuthPage = () => {
                   className='w-full outline-none px-2 py-1'
                 />
               </fieldset>
-              {isEmailValid === false && (
-                <p className='text-red-500 text-sm'>Invalid email format</p>
-              )}
 
               <fieldset className='border rounded-lg p-2 relative'>
                 <legend className='px-1 text-sm'>Password</legend>
@@ -242,13 +201,6 @@ const AuthPage = () => {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </fieldset>
-
-              {isPasswordValid === false && (
-                <p className='text-red-500 text-sm'>
-                  Password must be 8+ chars, include uppercase, lowercase,
-                  number & special char
-                </p>
-              )}
 
               <Button type='submit' className='mt-2'>
                 Login
@@ -293,9 +245,6 @@ const AuthPage = () => {
                   className='w-full outline-none px-2'
                 />
               </fieldset>
-              {isEmailValid === false && (
-                <p className='text-red-500 text-sm'>Invalid email format</p>
-              )}
 
               <fieldset className='border rounded-lg p-2 relative'>
                 <legend className='px-1 text-sm'>Password</legend>
@@ -316,19 +265,13 @@ const AuthPage = () => {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </fieldset>
-              {isPasswordValid === false && (
-                <p className='text-red-500 text-sm'>
-                  Password must be 8+ chars, include uppercase, lowercase,
-                  number & special char
-                </p>
-              )}
 
               {mounted && ifsendotp && (
                 <fieldset className='border-[1px] border-green-400 rounded-lg px-2'>
                   <legend className='px-1 text-sm'>OTP</legend>
                   <input
                     type='text'
-                    placeholder='Enter OTP to next'
+                    placeholder='Enter OTP'
                     maxLength={6}
                     required
                     value={formdata.otp}
@@ -346,7 +289,7 @@ const AuthPage = () => {
                     type='submit'
                     className='mt-2 w-full text-center bg-purple-500 text-white rounded-lg py-2 hover:bg-purple-600'
                   >
-                    Sign in
+                    Sign up
                   </button>
                 ) : (
                   <button

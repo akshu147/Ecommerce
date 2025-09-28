@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { Heart, Bell, User, ShoppingCart } from "lucide-react"
+import { Heart, Bell, User, ShoppingCart, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import Image from "next/image"
@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { setuserdata } from "../redux/userdataslice/userdataslice"
 import Checkiflogin from "./Checkiflogin"
 
-export default function Aside() {
+export default function Aside({ sidebarOpen, setSidebarOpen }) {
   const [isMounted, setIsMounted] = useState(false)
   const nav = useRouter()
   const dispatch = useDispatch()
@@ -50,8 +50,20 @@ export default function Aside() {
   return (
     <>
       <Checkiflogin />
-      <aside className="fixed rounded-2xl lg:static top-0 left-0 h-[100vh] w-64 bg-slate-100 shadow-md p-4 flex flex-col">
-        
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-slate-100 shadow-md p-4 flex flex-col
+          transform transition-transform duration-300
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+      >
+        {/* Mobile Close Button */}
+        <div className="lg:hidden flex justify-end mb-4">
+          <button onClick={() => setSidebarOpen(false)}>
+            <X size={24} />
+          </button>
+        </div>
+
         {/* Profile */}
         <div className="flex items-center gap-3 mb-6">
           <Image
@@ -61,7 +73,7 @@ export default function Aside() {
             height={50}
             className="rounded-full object-cover"
           />
-          <div>
+          <div className="flex-1">
             <p className="font-semibold">
               Account: {userdatava?.id || "Guest"}
             </p>
@@ -71,7 +83,7 @@ export default function Aside() {
             {!userdatava?.id && (
               <button
                 onClick={() => nav.push("/login")}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                className="px-3 py-1 mt-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition"
               >
                 Login / Signup
               </button>
@@ -80,28 +92,28 @@ export default function Aside() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-3 border-l border-gray-200 pl-4 py-4">
+        <nav className="flex flex-col gap-3 border-l border-gray-200 pl-3 py-2">
           <button
             onClick={() => nav.push("/pages/account")}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-2 px-2 py-2 text-gray-700 hover:bg-orange-100 hover:text-orange-600 rounded-md transition-all duration-200 text-sm"
           >
             <User size={20} /> My Account
           </button>
           <button
             onClick={() => nav.push("/pages/wishlist")}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-pink-100 hover:text-pink-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-2 px-2 py-2 text-gray-700 hover:bg-pink-100 hover:text-pink-600 rounded-md transition-all duration-200 text-sm"
           >
             <Heart size={20} /> Favorites
           </button>
           <button
             onClick={() => nav.push("/pages/orders")}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-2 px-2 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-600 rounded-md transition-all duration-200 text-sm"
           >
             <ShoppingCart size={20} /> Orders
           </button>
           <button
             onClick={() => nav.push("/pages/notification")}
-            className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:bg-green-100 hover:text-green-600 rounded-md transition-all duration-200"
+            className="flex items-center gap-2 px-2 py-2 text-gray-700 hover:bg-green-100 hover:text-green-600 rounded-md transition-all duration-200 text-sm"
           >
             <Bell size={20} /> Notifications
           </button>

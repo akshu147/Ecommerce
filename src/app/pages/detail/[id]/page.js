@@ -13,7 +13,7 @@ import { Heart, Star } from 'lucide-react';
 export default function ProductDetail() {
   const params = useParams();
   const id = params.id;
-  const products = useSelector(state => state.allproduct.value);
+  const products = useSelector((state) => state.allproduct.value);
   const dispatch = useDispatch();
 
   const [product, setProduct] = useState(null);
@@ -21,9 +21,14 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
 
+  // 🔥 Review States
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState('');
+  const [newRating, setNewRating] = useState(5);
+
   useEffect(() => {
     if (products.length > 0) {
-      const foundProduct = products.find(p => p.id === parseInt(id));
+      const foundProduct = products.find((p) => p.id === parseInt(id));
       setProduct(foundProduct);
       setMainImage(foundProduct?.thumbnail || '/placeholder.jpg');
       setLoading(false);
@@ -40,6 +45,21 @@ export default function ProductDetail() {
 
   const handleWishlist = () => {
     // dispatch(toggleWishlist(product));
+  };
+
+  // 🔥 Add Review Function
+  const handleAddReview = () => {
+    if (newReview.trim() === '') return alert('Please write a review');
+
+    const reviewData = {
+      id: Date.now(),
+      text: newReview,
+      rating: newRating,
+    };
+
+    setReviews([...reviews, reviewData]);
+    setNewReview('');
+    setNewRating(5);
   };
 
   return (
@@ -64,7 +84,13 @@ export default function ProductDetail() {
                   className="w-20 h-20 rounded-md overflow-hidden cursor-pointer border-2 border-gray-200 hover:border-blue-500"
                   onClick={() => setMainImage(img)}
                 >
-                  <Image src={img} width={80} height={80} alt="Thumbnail" className="object-cover" />
+                  <Image
+                    src={img}
+                    width={80}
+                    height={80}
+                    alt="Thumbnail"
+                    className="object-cover"
+                  />
                 </div>
               ))}
             </div>
@@ -80,7 +106,11 @@ export default function ProductDetail() {
             {/* Rating */}
             <div className="flex items-center gap-1 mb-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={i < product.rating ? 'text-yellow-400' : 'text-gray-300'} size={20} />
+                <Star
+                  key={i}
+                  className={i < product.rating ? 'text-yellow-400' : 'text-gray-300'}
+                  size={20}
+                />
               ))}
               <span className="ml-2 text-gray-500">{product.rating}.0</span>
             </div>
@@ -90,7 +120,10 @@ export default function ProductDetail() {
               <p className="text-2xl font-bold text-blue-600">₹{product.price}</p>
               {product.discountPercentage && (
                 <p className="text-sm text-gray-500 line-through">
-                  ₹{Math.round(product.price / (1 - product.discountPercentage / 100))}
+                  ₹
+                  {Math.round(
+                    product.price / (1 - product.discountPercentage / 100)
+                  )}
                 </p>
               )}
             </div>
@@ -141,7 +174,9 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Related Products */}
+
+
+        {/* Related Products */}
       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-6">Related Products</h2>
         <RelatedProducts
@@ -150,6 +185,71 @@ export default function ProductDetail() {
           brand={product.brand}
         />
       </div>
+
+      {/* Reviews Section */}
+<div className="mt-12">
+  <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
+
+  {/* Review Card */}
+  <div className="mb-6 p-4 rounded-xl shadow-md border bg-white">
+    <h3 className="font-semibold mb-2 text-gray-700">Write a Review</h3>
+
+    {/* Star Rating */}
+    <div className="flex items-center mb-2">
+      {[1,2,3,4,5].map((num) => (
+        <Star
+          key={num}
+          size={22}
+          className={`cursor-pointer transition ${
+            num <= newRating ? 'text-yellow-400' : 'text-gray-300'
+          }`}
+          onClick={() => setNewRating(num)}
+        />
+      ))}
+    </div>
+
+    {/* Review Input */}
+    <input
+      type="text"
+      value={newReview}
+      onChange={(e) => setNewReview(e.target.value)}
+      placeholder="Write your review..."
+      className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+    />
+
+    <button
+      onClick={handleAddReview}
+      className="mt-2 bg-orange-500 text-white px-4 py-1 rounded-full hover:bg-orange-600 transition text-sm"
+    >
+      Submit
+    </button>
+  </div>
+
+  {/* Reviews List */}
+  <div className="space-y-3">
+    {reviews.length === 0 ? (
+      <p className="text-gray-500 text-sm">No reviews yet. Be the first to review!</p>
+    ) : (
+      reviews.map((r) => (
+        <div key={r.id} className="p-3 bg-white rounded-xl shadow-sm border flex flex-col gap-1">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                size={18}
+                className={i < r.rating ? 'text-yellow-400' : 'text-gray-300'}
+              />
+            ))}
+          </div>
+          <p className="text-gray-700 text-sm">{r.text}</p>
+        </div>
+      ))
+    )}
+  </div>
+</div>
+
+
+    
     </div>
   );
 }

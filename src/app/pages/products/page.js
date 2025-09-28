@@ -1,16 +1,16 @@
 'use client'
 import { useEffect, useState } from 'react'
-// import { GoHeart, GoHeartFill } from 'react-icons/go'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { setallallproducts } from '@/app/redux/allproductslice/allproductslice'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-export default function Page () {
+export default function Page() {
   const dispatch = useDispatch()
-  // const nav = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 15
   const searchitem = useSelector(state => state.searchproduct.value)
@@ -24,8 +24,6 @@ export default function Page () {
   const [selectedBrand, setSelectedBrand] = useState('')
   const [serverfilepath, setserverfilepath] = useState('')
 
-  // fetch product to cookies for green dot
-
   // ------------------------
   // Fetch products from API
   // ------------------------
@@ -33,13 +31,9 @@ export default function Page () {
     const fetchDummyData = async () => {
       setLoading(true)
       try {
-        //     const allProduct = await axios.get(
-        //   "https://dummyjson.com/products?limit=100"
-        // );
         const allProduct = await axios.get(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/product/get-products`
         )
-        // Dispatch Redux action to store products
         dispatch(setallallproducts(allProduct.data.allproducts))
         setserverfilepath(allProduct.data.filepath)
 
@@ -49,6 +43,7 @@ export default function Page () {
         ]
         setCategories(allCategories)
       } catch (err) {
+        toast.error('Error fetching products 🚨')
         console.log('Error fetching data:', err)
       }
       setLoading(false)
@@ -56,6 +51,7 @@ export default function Page () {
 
     fetchDummyData()
   }, [dispatch])
+
   // ------------------------
   // Filtered products
   // ------------------------
@@ -73,16 +69,15 @@ export default function Page () {
     return matchesSearch && matchesCategory && matchesBrand && matchesPrice
   })
 
-  // // ------------------------
-  // // Paginationd
-  // // ------------------------
+  // ------------------------
+  // Pagination
+  // ------------------------
   const totalPages = Math.ceil(allProductData.length / itemsPerPage)
   const currentItems = allProductData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
 
-  // // Reset to first page when filters/search change
   useEffect(() => {
     setCurrentPage(1)
   }, [searchitem, selectedCategory, selectedBrand, maxPrice])
@@ -90,44 +85,35 @@ export default function Page () {
   // ------------------------
   // add to wishlist
   // ------------------------
-const addtowishlist = product => {
-  try {
-    // Get wishlist from localStorage
-    const wishlist = localStorage.getItem('wishlist')
-      ? JSON.parse(localStorage.getItem('wishlist'))
-      : []
+  const addtowishlist = product => {
+    try {
+      const wishlist = localStorage.getItem('wishlist')
+        ? JSON.parse(localStorage.getItem('wishlist'))
+        : []
 
-    // Check if product already exists in wishlist (by id)
-    const alreadyExists = wishlist.some(item => item.id === product.id)
+      const alreadyExists = wishlist.some(item => item.id === product.id)
 
-    if (alreadyExists) {
-      alert('This product is already in your wishlist! ❤️')
-      return
+      if (alreadyExists) {
+        toast.warning('This product is already in your wishlist ❤️')
+        return
+      }
+
+      wishlist.push(product)
+      localStorage.setItem('wishlist', JSON.stringify(wishlist))
+
+      toast.success('Product added to wishlist ✅')
+    } catch (err) {
+      toast.error('Something went wrong while adding to wishlist 🚨')
+      console.log(err.message)
     }
-
-    // Add new product
-    wishlist.push(product)
-
-    // Save updated wishlist back to localStorage
-    localStorage.setItem('wishlist', JSON.stringify(wishlist))
-
-    alert('Product added to wishlist successfully! ✅')
-    console.log('Product added to wishlist:', product)
-  } catch (err) {
-    console.log('Something went wrong')
-    console.log(err.message)
   }
-}
-
 
   // ------------------------
   // Render
   // ------------------------
   return (
     <>
-      {/* <Head /> */}
-      {/* <Navbar /> */}
-
+      <ToastContainer position='top-right' autoClose={2000} />
       {/* Mobile Filter Toggle */}
       <div className='md:hidden p-4'>
         <button
@@ -222,11 +208,9 @@ const addtowishlist = product => {
               >
                 <div className='relative'>
                   <Link
-                    href={`/pages/detail/${
-                      product.id
-                    }?name=${encodeURIComponent(product.title)}&price=${
-                      product.price
-                    }&image=${encodeURIComponent(
+                    href={`/pages/detail/${product.id}?name=${encodeURIComponent(
+                      product.title
+                    )}&price=${product.price}&image=${encodeURIComponent(
                       product.thumbnail
                     )}&brand=${encodeURIComponent(
                       product.brand || ''
@@ -251,22 +235,12 @@ const addtowishlist = product => {
                     onClick={() => addtowishlist(product)}
                     className='absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors'
                   >
-                    {/* {addedtowishlist.some(p => p.id === product.id) ? (
-                      <GoHeartFill className='w-5 h-5 text-red-500' />
-                    ) : (
-                      <GoHeart className='w-5 h-5 text-red-500' />
-                      
-                    )} */}
+                    ❤️
                   </button>
                 </div>
 
                 <div className='p-4'>
-                  <h3
-                    className='font-semibold text-gray-800 mb-2 line-clamp-2 '
-                    onClick={() => {
-                      console.log(product.thumbnail)
-                    }}
-                  >
+                  <h3 className='font-semibold text-gray-800 mb-2 line-clamp-2'>
                     {product.title}
                   </h3>
                   <p className='text-sm text-gray-600 mb-2'>{product.brand}</p>
@@ -314,9 +288,7 @@ const addtowishlist = product => {
           </div>
 
           <button
-            onClick={() =>
-              setCurrentPage(prev => Math.min(prev + 1, totalPages))
-            }
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
             className='px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors'
           >
