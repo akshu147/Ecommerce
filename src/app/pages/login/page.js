@@ -47,7 +47,7 @@ useEffect(()=> {
   if(token){
     nav.push('/')
   }
-}, [])
+}, [nav])
 
   const userRegister = async e => {
     e.preventDefault()
@@ -66,6 +66,7 @@ useEffect(()=> {
 
       if (response.status == 201) {
         toast.success('Signup successful 🎉')
+        localStorage.setItem('accessToken', response.data.accessToken)
         return nav.push('/pages/account')
       }
     } catch (err) {

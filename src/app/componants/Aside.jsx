@@ -77,13 +77,13 @@ export default function Aside({ sidebarOpen, setSidebarOpen }) {
 
         {/* Profile */}
         <div className="flex items-center gap-3 mb-6">
-          <Image
-            src={userdatava?.avatar || "/default-avatar.png"}
+          {/* <Image
+            src={userdatava?.avatar || "/tommy-avatar.png"} // <-- static Tommy avatar added
             alt="User Avatar"
             width={50}
             height={50}
             className="rounded-full object-cover"
-          />
+          /> */}
           <div>
             <p className="font-semibold">
               Account: {userdatava?.id || "Guest"}

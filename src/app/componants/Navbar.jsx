@@ -16,16 +16,18 @@ import { LuHeartHandshake } from 'react-icons/lu'
 import { useDispatch, useSelector } from 'react-redux'
 import { setwishlist } from '../redux/wishlistslice/wishlistslice'
 import { setsearchitem } from '../redux/productsearchslice/productsearchslice'
-
+import { setCartItems } from '../redux/cartSlice/cartSlice'
 const Navbar = () => {
   const dispatch = useDispatch()
   const [showMenu, setShowMenu] = useState(false)
-  const [cartItems, setCartItems] = useState([])
+  const [loading, setLoading] = useState(true);
+
   const [showmobilemenu, setshowmobilemenu] = useState('-100%')
   const [query, setQuery] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   // const wishlistitem = useSelector(state => state.wishlist.value)
   const [wishlistitem, setwishlistitem] = useState([])
+  const cartitem = useSelector(state => state.cart.items)
   const [searchholdernames, setsearchholdername] = useState([
     'apple',
     'banana',
@@ -189,7 +191,27 @@ const checkiflogin = () => {
   }
 }
 
-    // Load wishlist from cookies
+
+
+    useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/cart/get-cart-items");
+        if (res.data?.data) {
+          const itemsWithQty = res.data.data.map(item => ({
+            ...item,
+            quantity: item.quantity || 1
+          }));
+          dispatch(setCartItems(itemsWithQty));
+        }
+      } catch (err) {
+        console.error("Failed to fetch cart:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCart();
+  }, [dispatch]);
 
 
   return (
@@ -338,9 +360,10 @@ const checkiflogin = () => {
                 dispatch(setsearchitem(query)),
                   setSuggestions([]),
                   setsearchholdername([])
+            
                 nav.push('/pages/products')
               }}
-              className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-black text-white p-2 rounded-md cursor-pointer'
+              className='absolute top-[50%] right-2 transform -translate-y-1/2 bg-[black] text-white p-2 rounded-md cursor-pointer'
             >
               <FaSearch />
             </div>
@@ -370,10 +393,10 @@ const checkiflogin = () => {
             <LuHeartHandshake />
           </i>
 
-          <div className='relative cursor-pointer'>
+          <div className='relative cursor-pointer' onClick={() => nav.push('/pages/cart')}>
             <IoMdCart className='text-[20px] md:text-[26px]' />
             <p className='absolute top-0 left-full transform -translate-y-1/2 -translate-x-1/2 text-black text-[13px] font-bold'>
-              {wishlistitem?.length || 0}
+              {cartitem?.length || 0}
             </p>
           </div>
 
@@ -401,7 +424,7 @@ const checkiflogin = () => {
             key={subidx}
             onClick={() => {
               setQuery(subcat)
-              setSearchTerm(subcat)
+              dispatch(setsearchitem(subcat))
               setsearchholdername([])
 
               nav.push('/pages/products')
